@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自动投递 - 智能职业发展助手</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+        :root {
+            --primary: #2C7BE5; --primary-dark: #1E40AF;
+            --bg-primary: #F5F9FC; --bg-secondary: #FFFFFF;
+            --text-primary: #1A365D; --text-secondary: #6B7280; --text-muted: #9CA3AF;
+            --border: #E5E7EB; --success-bg: #E6F7E6; --success-text: #166534;
+            --danger-bg: #FCE8E6; --danger-text: #991B1B;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --shadow: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08); --radius: 8px;
+            --warning-bg: #FEF3C7; --warning-text: #92400E;
+        }
+        body { background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        .navbar { background: var(--bg-secondary); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .navbar-content { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; max-width: 1200px; margin: 0 auto; }
+        .navbar-brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--text-primary); text-decoration: none; }
+        .brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; }
+        .navbar-back { color: var(--primary); text-decoration: none; font-size: 14px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+        .page-header { margin-bottom: 32px; }
+        .step-nav { background: white; border-bottom: 1px solid var(--border); padding: 8px 24px; }
+        .step-nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 0; flex-wrap: wrap; width: 100%; box-sizing: border-box; }
+        .step-link { font-size: 12px; padding: 4px 10px; border-radius: 20px; color: var(--text-secondary); text-decoration: none; white-space: nowrap; transition: all 0.2s; }
+        .step-link:hover { color: var(--primary); background: #EFF6FF; }
+        .step-link.active { background: var(--primary); color: white; font-weight: 600; }
+        .step-arrow { color: var(--text-muted); font-size: 11px; margin: 0 1px; }
+        .step-nav-btns { margin-left: auto; display: flex; gap: 8px; }
+        .btn-step { font-size: 12px; padding: 4px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: white; color: var(--text-secondary); cursor: pointer; text-decoration: none; transition: all 0.2s; }
+        .btn-step:hover { border-color: var(--primary); color: var(--primary); }
+        .page-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .page-subtitle { font-size: 15px; color: var(--text-secondary); }
+        .tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 24px; }
+        .tab { padding: 12px 24px; font-size: 14px; font-weight: 600; color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+        .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .card { background: white; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 24px; margin-bottom: 24px; }
+        .card-title { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .form-label { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+        .form-input { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; color: var(--text-primary); background: white; outline: none; }
+        .form-input:focus { border-color: var(--primary); }
+        .form-select { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; color: var(--text-primary); background: white; outline: none; cursor: pointer; }
+        .form-textarea { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; color: var(--text-primary); background: white; outline: none; resize: vertical; min-height: 80px; }
+        .btn { padding: 10px 24px; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; text-decoration: none; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-primary:disabled { background: #93c5fd; cursor: not-allowed; }
+        .btn-secondary { background: white; color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-sm { padding: 6px 14px; font-size: 13px; }
+        .btn-xs { padding: 4px 10px; font-size: 12px; }
+        .alert { padding: 12px 16px; border-radius: var(--radius); font-size: 14px; margin-bottom: 16px; }
+        .alert-info { background: #EFF6FF; color: #1d4ed8; }
+        .alert-success { background: var(--success-bg); color: var(--success-text); }
+        .alert-error { background: var(--danger-bg); color: var(--danger-text); }
+        .alert-warning { background: var(--warning-bg); color: var(--warning-text); }
+        .install-hint { background: #FFF7ED; border: 1px solid #fdba74; border-radius: var(--radius); padding: 16px; }
+        .install-hint pre { background: #1E293B; color: #E2E8F0; padding: 12px; border-radius: 6px; font-size: 13px; margin-top: 8px; overflow-x: auto; }
+        .url-list { border: 1px solid var(--border); border-radius: var(--radius); min-height: 100px; padding: 12px; font-size: 13px; }
+        .url-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+        .url-item:last-child { border-bottom: none; }
+        .url-status { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .status-pending { background: #D1D5DB; }
+        .status-success { background: #10B981; }
+        .status-failed { background: #EF4444; }
+        .status-skipped { background: #F59E0B; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th { background: var(--bg-primary); padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 12px; border-bottom: 1px solid var(--border); }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tr:hover td { background: var(--bg-primary); }
+        .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+        .badge-green { background: var(--success-bg); color: var(--success-text); }
+        .badge-red { background: var(--danger-bg); color: var(--danger-text); }
+        .badge-gray { background: #F3F4F6; color: var(--text-secondary); }
+        .badge-blue { background: #DBEAFE; color: #1E40AF; }
+        .badge-orange { background: #FEF3C7; color: #92400E; }
+        .empty-state { text-align: center; padding: 48px; color: var(--text-muted); }
+        .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+        .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .hidden { display: none !important; }
+
+        /* 岗位列表样式 */
+        .job-list-container { margin-bottom: 20px; }
+        .job-list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .job-list { max-height: 350px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+        .job-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; }
+        .job-item:last-child { border-bottom: none; }
+        .job-item:hover { background: var(--bg-primary); }
+        .job-item.selected { background: #EFF6FF; border-left: 3px solid var(--primary); }
+        .job-checkbox { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); }
+        .job-info { flex: 1; min-width: 0; }
+        .job-title { font-weight: 600; color: var(--text-primary); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .job-company { font-size: 13px; color: var(--text-secondary); }
+        .job-meta { display: flex; gap: 12px; align-items: center; font-size: 12px; color: var(--text-muted); }
+        .job-score { display: flex; align-items: center; gap: 6px; }
+        .score-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .score-high { background: var(--success-bg); color: var(--success-text); }
+        .score-medium { background: var(--warning-bg); color: var(--warning-text); }
+        .score-low { background: var(--danger-bg); color: var(--danger-text); }
+        .job-actions { display: flex; gap: 8px; }
+        .copy-btn { background: none; border: 1px solid var(--border); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; color: var(--text-secondary); transition: all 0.2s; }
+        .copy-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .copy-btn.copied { border-color: var(--success-text); color: var(--success-text); background: var(--success-bg); }
+        
+        .selected-count { font-size: 13px; color: var(--text-secondary); margin-top: 8px; }
+        .select-all-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: var(--bg-primary); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1; }
+
+        /* 投递进度 */
+        .progress-container { margin-top: 16px; }
+        .progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 12px; }
+        .progress-fill { height: 100%; background: var(--primary); transition: width 0.3s ease; }
+        .progress-stats { display: flex; gap: 16px; font-size: 13px; color: var(--text-secondary); }
+        .progress-stat { display: flex; align-items: center; gap: 4px; }
+        .progress-stat .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container { padding: 24px 16px; }
+            .job-item { flex-wrap: wrap; }
+            .job-actions { margin-top: 8px; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="navbar-content">
+        <a href="/" class="navbar-brand"><div class="brand-icon">智</div>智能职业发展助手</a>
+        <a href="/" class="navbar-back">← 返回首页</a>
+    </div>
+</nav>
+<div class="step-nav"><div class="step-nav-inner">
+  <a href="job_scraper.html" class="step-link">1 岗位采集</a><span class="step-arrow">›</span>
+  <a href="resume_manage.html" class="step-link">2 简历管理</a><span class="step-arrow">›</span>
+  <a href="job_match.html" class="step-link">3 岗位匹配</a><span class="step-arrow">›</span>
+  <a href="resume_optimize.html" class="step-link">4 简历优化</a><span class="step-arrow">›</span>
+  <a href="auto_apply.html" class="step-link active">5 自动投递</a><span class="step-arrow">›</span>
+  <a href="interview_coach.html" class="step-link">6 模拟面试</a>
+  <div class="step-nav-btns"><a href="resume_optimize.html" class="btn-step">‹ 上一步</a><a href="interview_coach.html" class="btn-step">下一步 ›</a></div>
+:</div></div>
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">🚀 自动投递</h1>
+        <p class="page-subtitle">支持浏览器自动化、实习僧批量投递、邮件投递三种方式</p>
+    </div>
+
+    <div class="tabs">
+        <div class="tab" onclick="switchTab('browser')">🤖 浏览器自动化</div>
+        <div class="tab active" onclick="switchTab('batch')">📋 实习僧批量投递</div>
+        <div class="tab" onclick="switchTab('email')">✉️ 邮件投递</div>
+        <div class="tab" onclick="switchTab('records')">📊 投递记录</div>
+    </div>
+
+    <!-- 浏览器自动化 -->
+    <div class="tab-content" id="tab-browser">
+        <div class="card">
+            <div class="card-title">🤖 浏览器自动化投递（BOSS直聘 / 前程无忧）</div>
+            <div class="alert alert-info">需要安装 <b>Selenium + Chrome</b>，首次使用需扫码登录平台，Cookie 保存后后续无需重复登录。</div>
+            <div id="browserAlert" class="hidden"></div>
+            <div class="form-group">
+                <label class="form-label">选择目标岗位 *</label>
+                <select id="browserJobSelect" class="form-select">
+                    <option value="">加载中...</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="startBrowserApply()" id="browserBtn">
+                <span id="browserBtnContent">🚀 开始投递（需扫码登录）</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 实习僧批量 - 全新UI -->
+    <div class="tab-content active" id="tab-batch">
+        <div class="card">
+            <div class="card-title">📋 实习僧批量一键投递</div>
+            <div class="alert alert-info">需要安装 <b>Playwright + Chromium</b>，首次使用需在弹出的浏览器中手动登录实习僧账号。从已留存岗位列表勾选投递，或手动输入链接。</div>
+            <div id="batchAlert" class="hidden"></div>
+            
+            <!-- 岗位列表 -->
+            <div class="job-list-container">
+                <div class="job-list-header">
+                    <div class="card-title" style="margin:0;">已留存岗位列表</div>
+                    <button class="btn btn-secondary btn-sm" onclick="loadRetainedJobs()">🔄 刷新</button>
+                </div>
+                <div class="job-list" id="jobList">
+                    <div class="empty-state"><div class="icon">📋</div><p>正在加载岗位...</p></div>
+                </div>
+                <div class="selected-count" id="selectedCount">已选择 0 个岗位</div>
+            </div>
+            
+            <!-- 手动输入区 -->
+            <div class="form-group">
+                <label class="form-label">或手动输入投递链接（每行一个）</label>
+                <textarea id="batchUrls" class="form-textarea" rows="4"
+                    placeholder="https://www.shixiseng.com/intern/xxx&#10;https://www.shixiseng.com/intern/yyy&#10;..."></textarea>
+            </div>
+            
+            <!-- 投递设置 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                <div class="form-group" style="margin:0;">
+                    <label class="form-label">最小投递间隔（秒）</label>
+                    <input type="number" id="delayMin" class="form-input" value="10" min="5">
+                </div>
+                <div class="form-group" style="margin:0;">
+                    <label class="form-label">最大投递间隔（秒）</label>
+                    <input type="number" id="delayMax" class="form-input" value="30" min="10">
+                </div>
+            </div>
+            
+            <!-- 投递进度 -->
+            <div id="batchProgress" class="hidden progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <div class="progress-stats">
+                    <div class="progress-stat"><span class="dot" style="background:#10B981"></span> 成功: <span id="statSuccess">0</span></div>
+                    <div class="progress-stat"><span class="dot" style="background:#F59E0B"></span> 跳过: <span id="statSkipped">0</span></div>
+                    <div class="progress-stat"><span class="dot" style="background:#EF4444"></span> 失败: <span id="statFailed">0</span></div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="startBatchApply()" id="batchBtn" style="margin-top:16px;">
+                <span id="batchBtnContent">🚀 开始批量投递</span>
+            </button>
+            
+            <div style="margin-top:16px;font-size:13px;color:var(--text-muted);">
+                ⚠️ 投递间隔随机化可降低被反爬检测的风险，建议不低于 10 秒
+            </div>
+        </div>
+    </div>
+
+    <!-- 邮件投递 -->
+    <div class="tab-content" id="tab-email">
+        <div class="card">
+            <div class="card-title">✉️ 邮件投递</div>
+            <div class="alert alert-info">通过 SMTP 发送求职邮件，需要在<b>系统设置</b>中配置邮箱信息。适合有邮箱联系方式的岗位。</div>
+            <div id="emailAlert" class="hidden"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="form-group">
+                    <label class="form-label">选择目标岗位 *</label>
+                    <select id="emailJobSelect" class="form-select" onchange="updateContactEmail()">
+                        <option value="">加载中...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">收件人邮箱（可覆盖岗位默认）</label>
+                    <input type="email" id="toEmail" class="form-input" placeholder="recruiter@company.com">
+                    <div id="jobDetailLink" style="margin-top:4px;font-size:13px;display:none;">
+                        <a id="jobDetailUrl" href="#" target="_blank" style="color:#4f46e5;text-decoration:none;">
+                            🔗 查看岗位详情（查找联系邮箱）
+                        </a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">附件简历</label>
+                    <select id="emailResumeSelect" class="form-select">
+                        <option value="">使用主简历</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">求职者姓名（用于邮件称呼）</label>
+                    <input type="text" id="applicantName" class="form-input" placeholder="您的姓名">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">自定义自我介绍（可选，留空自动生成）</label>
+                <textarea id="customIntro" class="form-textarea" placeholder="我目前正在积极寻找实习机会..."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="startEmailApply()" id="emailBtn">
+                <span id="emailBtnContent">✉️ 发送求职邮件</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 投递记录 -->
+    <div class="tab-content" id="tab-records">
+        <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <div class="card-title" style="margin:0;">📊 投递记录</div>
+                <button class="btn btn-secondary btn-sm" onclick="loadRecords()">🔄 刷新</button>
+            </div>
+            <div id="recordsContainer">
+                <div class="empty-state"><div class="icon">📊</div><p>暂无投递记录</p></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 全局状态
+let allJobs = [];
+let retainedJobs = [];
+let selectedJobUrls = new Set();
+
+function switchTab(name) {
+    document.querySelectorAll('.tab').forEach((t, i) => {
+        const names = ['browser', 'batch', 'email', 'records'];
+        t.classList.toggle('active', names[i] === name);
+    });
+    document.querySelectorAll('.tab-content').forEach(c => {
+        c.classList.toggle('active', c.id === `tab-${name}`);
+    });
+    if (name === 'batch' && retainedJobs.length === 0) loadRetainedJobs();
+    if (name === 'records') loadRecords();
+}
+
+function showAlert(id, type, msg) {
+    const el = document.getElementById(id);
+    el.className = `alert alert-${type}`;
+    el.innerHTML = msg;
+    el.classList.remove('hidden');
+}
+
+function renderInstallHint(el, error, hint) {
+    el.innerHTML = `<div class="install-hint"><b>⚠️ ${error}</b><pre>${hint}</pre></div>`;
+    el.classList.remove('hidden');
+}
+
+// 加载已留存岗位
+async function loadRetainedJobs() {
+    const container = document.getElementById('jobList');
+    container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>正在加载岗位...</p></div>';
+    
+    try {
+        const res = await fetch('/api/jobs/list?retained_only=true');
+        const data = await res.json();
+        retainedJobs = data.jobs || [];
+        
+        if (retainedJobs.length === 0) {
+            container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>暂无已留存的岗位</p><p style="font-size:12px;margin-top:8px;">请先在岗位采集页面保存感兴趣的岗位</p></div>';
+            return;
+        }
+        
+        // 检查是否是实习僧岗位
+        const shixisengJobs = retainedJobs.filter(j => 
+            j.url && j.url.includes('shixiseng.com')
+        );
+        
+        if (shixisengJobs.length === 0) {
+            container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>暂无实习僧岗位</p><p style="font-size:12px;margin-top:8px;">当前列表中没有发现实习僧平台的岗位链接</p></div>';
+            return;
+        }
+        
+        // 渲染岗位列表
+        const selectAllChecked = selectedJobUrls.size === shixisengJobs.length;
+        
+        container.innerHTML = `
+            <div class="select-all-row">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                    <input type="checkbox" class="job-checkbox" id="selectAll" 
+                        ${selectAllChecked ? 'checked' : ''} 
+                        onchange="toggleSelectAll()">
+                    <span style="font-size:13px;font-weight:500;">全选</span>
+                </label>
+                <span style="font-size:12px;color:var(--text-muted);">共 ${shixisengJobs.length} 个实习僧岗位</span>
+            </div>
+            ${shixisengJobs.map((job, idx) => {
+                const matchScore = job.match_score || 0;
+                const scoreClass = matchScore >= 70 ? 'score-high' : matchScore >= 50 ? 'score-medium' : 'score-low';
+                const isSelected = selectedJobUrls.has(job.url);
+                return `
+                <div class="job-item ${isSelected ? 'selected' : ''}" data-url="${job.url}">
+                    <input type="checkbox" class="job-checkbox" 
+                        ${isSelected ? 'checked' : ''} 
+                        onchange="toggleJobSelection('${job.url}', this.checked)">
+                    <div class="job-info">
+                        <div class="job-title">${job.title || '未知岗位'}</div>
+                        <div class="job-company">${job.company || ''} ${job.city ? '· ' + job.city : ''}</div>
+                        <div class="job-meta">
+                            <span>${job.salary || '薪资面议'}</span>
+                            ${matchScore > 0 ? `<span class="job-score"><span class="score-badge ${scoreClass}">匹配 ${matchScore}%</span></span>` : ''}
+                        </div>
+                    </div>
+                    <div class="job-actions">
+                        <button class="copy-btn" onclick="copyJobUrl('${job.url}', this)" title="复制链接">
+                            复制链接
+                        </button>
+                    </div>
+                </div>
+            `}).join('')}
+        `;
+        
+        updateSelectedCount();
+        
+    } catch (e) {
+        container.innerHTML = '<div class="empty-state"><div class="icon">❌</div><p>加载失败: ' + e.message + '</p></div>';
+    }
+}
+
+// 切换单个岗位选择
+function toggleJobSelection(url, checked) {
+    if (checked) {
+        selectedJobUrls.add(url);
+    } else {
+        selectedJobUrls.delete(url);
+    }
+    // 更新视觉状态
+    const jobItem = document.querySelector(`[data-url="${url}"]`);
+    if (jobItem) {
+        jobItem.classList.toggle('selected', checked);
+    }
+    // 取消全选
+    const selectAll = document.getElementById('selectAll');
+    if (selectAll && !checked) {
+        selectAll.checked = false;
+    }
+    updateSelectedCount();
+}
+
+// 全选/取消全选
+function toggleSelectAll() {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.job-checkbox:not(#selectAll)');
+    
+    checkboxes.forEach(cb => {
+        const url = cb.closest('.job-item').dataset.url;
+        cb.checked = selectAll.checked;
+        if (selectAll.checked) {
+            selectedJobUrls.add(url);
+            cb.closest('.job-item').classList.add('selected');
+        } else {
+            selectedJobUrls.delete(url);
+            cb.closest('.job-item').classList.remove('selected');
+        }
+    });
+    updateSelectedCount();
+}
+
+// 更新已选择数量
+function updateSelectedCount() {
+    const count = selectedJobUrls.size;
+    document.getElementById('selectedCount').textContent = `已选择 ${count} 个岗位`;
+}
+
+// 复制链接
+function copyJobUrl(url, btn) {
+    navigator.clipboard.writeText(url).then(() => {
+        btn.textContent = '已复制!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = '复制链接';
+            btn.classList.remove('copied');
+        }, 1500);
+    }).catch(() => {
+        // 降级方案
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.textContent = '已复制!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = '复制链接';
+            btn.classList.remove('copied');
+        }, 1500);
+    });
+}
+
+// 获取所有待投递URL
+function getAllUrls() {
+    const urls = new Set();
+    
+    // 从已选岗位添加
+    selectedJobUrls.forEach(url => urls.add(url));
+    
+    // 从手动输入添加
+    const manualText = document.getElementById('batchUrls').value.trim();
+    if (manualText) {
+        manualText.split('\n').forEach(line => {
+            const url = line.trim();
+            if (url && url.includes('shixiseng.com')) {
+                urls.add(url);
+            }
+        });
+    }
+    
+    return Array.from(urls);
+}
+
+// 开始批量投递
+async function startBatchApply() {
+    const urls = getAllUrls();
+    if (!urls.length) {
+        showAlert('batchAlert', 'error', '⚠️ 请至少选择一个岗位或输入一个有效的实习僧链接');
+        return;
+    }
+    
+    const btn = document.getElementById('batchBtn');
+    btn.disabled = true;
+    document.getElementById('batchBtnContent').innerHTML = '<span class="spinner"></span> 批量投递中...';
+    
+    const progressDiv = document.getElementById('batchProgress');
+    progressDiv.classList.remove('hidden');
+    
+    // 重置统计
+    let success = 0, skipped = 0, failed = 0;
+    const total = urls.length;
+    
+    try {
+        const res = await fetch('/api/apply/shixiseng-batch', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                urls: urls,
+                delay_min: parseInt(document.getElementById('delayMin').value) || 10,
+                delay_max: parseInt(document.getElementById('delayMax').value) || 30,
+            })
+        });
+        
+        const data = await res.json();
+        
+        if (data.install_hint) {
+            const el = document.getElementById('batchAlert');
+            renderInstallHint(el, data.error, data.install_hint);
+        } else if (data.success) {
+            data.results.forEach(r => {
+                if (r.status === 'success') success++;
+                else if (r.status === 'skipped') skipped++;
+                else failed++;
+            });
+            
+            const percent = 100;
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('statSuccess').textContent = success;
+            document.getElementById('statSkipped').textContent = skipped;
+            document.getElementById('statFailed').textContent = failed;
+            
+            showAlert('batchAlert', 'success', 
+                `✅ 投递完成！成功 ${success}，跳过 ${skipped}，失败 ${failed}（共 ${total} 条）`);
+        } else {
+            showAlert('batchAlert', 'error', `❌ ${data.error}`);
+        }
+    } catch (e) {
+        showAlert('batchAlert', 'error', `❌ 请求失败：${e.message}`);
+    } finally {
+        btn.disabled = false;
+        document.getElementById('batchBtnContent').textContent = '🚀 开始批量投递';
+    }
+}
+
+async function loadData() {
+    const [jobRes, resumeRes, tailoredRes] = await Promise.all([
+        fetch('/api/jobs/list?retained_only=true'),
+        fetch('/api/resume/list'),
+        fetch('/api/resume/tailored/list'),
+    ]);
+    const [jd, rd, td] = await Promise.all([jobRes.json(), resumeRes.json(), tailoredRes.json()]);
+
+    allJobs = jd.jobs || [];
+    const jobOptions = '<option value="">请选择岗位...</option>' +
+        allJobs.map(j => {
+            const hasEmail = j.contact_email ? '📧' : '❌无邮箱';
+            return `<option value="${j.id}" data-email="${j.contact_email||''}" data-url="${j.url||''}" data-title="${j.title||''}" data-company="${j.company||''}">
+                ${j.title} - ${j.company} ${hasEmail}
+            </option>`;
+        }).join('');
+
+    document.getElementById('browserJobSelect').innerHTML = jobOptions;
+    document.getElementById('emailJobSelect').innerHTML = jobOptions;
+
+    const resumeOptions = '<option value="">使用主简历</option>' +
+        (td.resumes || []).map(r =>
+            `<option value="${r.id}">${r.file_name} (定制)</option>`
+        ).join('') +
+        (rd.resumes || []).map(r =>
+            `<option value="base_${r.id}">${r.parsed_data?.name || r.file_name}</option>`
+        ).join('');
+    document.getElementById('emailResumeSelect').innerHTML = resumeOptions;
+    
+    // 加载已留存岗位
+    loadRetainedJobs();
+}
+
+function updateContactEmail() {
+    const sel = document.getElementById('emailJobSelect');
+    const opt = sel.options[sel.selectedIndex];
+    const jobId = sel.value;
+    const toEmailEl = document.getElementById('toEmail');
+    const linkContainer = document.getElementById('jobDetailLink');
+    const linkEl = document.getElementById('jobDetailUrl');
+    
+    if (!jobId) {
+        toEmailEl.value = '';
+        toEmailEl.placeholder = 'recruiter@company.com';
+        linkContainer.style.display = 'none';
+        return;
+    }
+    
+    const email = opt.dataset.email || '';
+    const jobUrl = opt.dataset.url || '';
+    const jobTitle = opt.dataset.title || '';
+    const company = opt.dataset.company || '';
+    toEmailEl.value = email;
+    
+    // 显示岗位详情链接
+    if (jobUrl) {
+        linkEl.href = jobUrl;
+        linkEl.textContent = `🔗 查看岗位详情：${jobTitle}${company ? ' - ' + company : ''}（查找联系邮箱）`;
+        linkContainer.style.display = 'block';
+    } else {
+        linkContainer.style.display = 'none';
+    }
+    
+    if (!email) {
+        toEmailEl.placeholder = '该岗位暂无联系邮箱，请手动填写';
+        if (jobUrl) {
+            showAlert('emailAlert', 'warning', '⚠️ 该岗位暂无联系邮箱，请点击下方链接查看岗位详情，找到邮箱后复制填写');
+        } else {
+            showAlert('emailAlert', 'warning', '⚠️ 该岗位暂无联系邮箱，请手动填写收件人邮箱后再发送');
+        }
+    } else {
+        hideAlert('emailAlert');
+    }
+    
+    // 自动填充求职者姓名（从主简历中获取）
+    const applicantNameEl = document.getElementById('applicantName');
+    if (!applicantNameEl.value) {
+        // 尝试从简历选择框的文本中提取姓名
+        const resumeSel = document.getElementById('emailResumeSelect');
+        const resumeOpt = resumeSel.options[resumeSel.selectedIndex];
+        if (resumeOpt && resumeOpt.value) {
+            const nameMatch = resumeOpt.textContent.match(/^(\S+)/);
+            if (nameMatch) applicantNameEl.value = nameMatch[1];
+        }
+    }
+}
+
+function hideAlert(id) {
+    const el = document.getElementById(id);
+    if (el) { el.className = 'hidden'; el.innerHTML = ''; }
+}
+
+async function startBrowserApply() {
+    const jobId = document.getElementById('browserJobSelect').value;
+    if (!jobId) { showAlert('browserAlert', 'error', '⚠️ 请选择目标岗位'); return; }
+
+    const btn = document.getElementById('browserBtn');
+    btn.disabled = true;
+    document.getElementById('browserBtnContent').innerHTML = '<span class="spinner"></span> 浏览器启动中...';
+
+    try {
+        const res = await fetch('/api/apply/browser', {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({job_id: jobId})
+        });
+        const data = await res.json();
+        if (data.install_hint) {
+            const el = document.getElementById('browserAlert');
+            renderInstallHint(el, data.error, data.install_hint);
+        } else if (data.success) {
+            showAlert('browserAlert', 'success', `✅ ${data.message}`);
+        } else {
+            showAlert('browserAlert', 'error', `❌ ${data.error || data.message}`);
+        }
+    } catch (e) {
+        showAlert('browserAlert', 'error', `❌ 请求失败：${e.message}`);
+    } finally {
+        btn.disabled = false;
+        document.getElementById('browserBtnContent').textContent = '🚀 开始投递（需扫码登录）';
+    }
+}
+
+async function startEmailApply() {
+    const jobId = document.getElementById('emailJobSelect').value;
+    if (!jobId) { showAlert('emailAlert', 'error', '⚠️ 请选择目标岗位'); return; }
+    const toEmail = document.getElementById('toEmail').value.trim();
+    const job = allJobs.find(j => String(j.id) === String(jobId));
+    if (!toEmail && !job?.contact_email) {
+        showAlert('emailAlert', 'warning', '⚠️ 该岗位没有联系邮箱，请手动填写收件人邮箱');
+        return;
+    }
+
+    const btn = document.getElementById('emailBtn');
+    btn.disabled = true;
+    document.getElementById('emailBtnContent').innerHTML = '<span class="spinner"></span> 发送中...';
+
+    const resumeSel = document.getElementById('emailResumeSelect').value;
+    const tailoredId = resumeSel && !resumeSel.startsWith('base_') ? resumeSel : null;
+
+    try {
+        const res = await fetch('/api/apply/email', {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                job_id: jobId,
+                tailored_resume_id: tailoredId,
+                to_email: toEmail,
+                applicant_name: document.getElementById('applicantName').value,
+                custom_intro: document.getElementById('customIntro').value,
+            })
+        });
+        const data = await res.json();
+        if (data.success) {
+            showAlert('emailAlert', 'success', `✅ ${data.message}`);
+        } else {
+            showAlert('emailAlert', 'error', `❌ ${data.error}${data.config_hint ? '<br><small>' + data.config_hint + '</small>' : ''}`);
+        }
+    } catch (e) {
+        showAlert('emailAlert', 'error', `❌ 请求失败：${e.message}`);
+    } finally {
+        btn.disabled = false;
+        document.getElementById('emailBtnContent').textContent = '✉️ 发送求职邮件';
+    }
+}
+
+async function loadRecords() {
+    const res = await fetch('/api/apply/records');
+    const data = await res.json();
+    const container = document.getElementById('recordsContainer');
+    if (!data.records?.length) {
+        container.innerHTML = '<div class="empty-state"><div class="icon">📊</div><p>暂无投递记录</p></div>';
+        return;
+    }
+    const methodNames = {browser:'浏览器自动化', shixiseng_batch:'实习僧批量', email:'邮件投递'};
+    const statusLabels = {submitted:'已投递', pending:'待处理', failed:'失败', success:'成功'};
+    container.innerHTML = `<div class="table-wrap"><table>
+        <thead><tr><th>职位</th><th>公司</th><th>城市</th><th>方式</th><th>状态</th><th>时间</th></tr></thead>
+        <tbody>${data.records.map(r => {
+            const title = r.title || r.job_title || '未知岗位';
+            const titleHtml = r.url ? `<a href="${r.url}" target="_blank" style="color:#4f46e5;text-decoration:none;">${title}</a>` : title;
+            return `<tr>
+            <td>${titleHtml}</td>
+            <td>${r.company || '-'}</td>
+            <td>${r.city || '-'}</td>
+            <td>${methodNames[r.method] || r.method}</td>
+            <td><span class="badge ${r.status==='submitted'?'badge-green':r.status==='failed'?'badge-red':'badge-gray'}">${statusLabels[r.status] || r.status}</span></td>
+            <td>${r.applied_at ? new Date(r.applied_at).toLocaleString('zh-CN') : '-'}</td>
+        </tr>`;
+        }).join('')}</tbody>
+    </table></div>`;
+}
+
+loadData();
+</script>
+</body>
+</html>

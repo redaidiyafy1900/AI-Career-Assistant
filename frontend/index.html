@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能职业发展助手 - 模拟面试系统</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        /* CSS 变量 - 蓝色主题 */
+        :root {
+            --primary: #2C7BE5;
+            --primary-dark: #1E40AF;
+            --primary-light: #3B82F6;
+            --bg-primary: #F5F9FC;
+            --bg-secondary: #FFFFFF;
+            --text-primary: #1A365D;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --border: #E5E7EB;
+            --success-bg: #E6F7E6;
+            --success-text: #166534;
+            --danger-bg: #FCE8E6;
+            --danger-text: #991B1B;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+            --radius: 8px;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .navbar-brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .navbar-item {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .navbar-item:hover {
+            color: var(--primary);
+        }
+
+        /* 下拉菜单 */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            min-width: 200px;
+            padding: 8px 0;
+            display: none;
+            z-index: 1000;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 12px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-primary);
+            color: var(--primary);
+        }
+
+        /* 英雄区 */
+        .hero {
+            padding: 80px 0;
+            background: var(--bg-secondary);
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 48px;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            transform: scale(0.98);
+        }
+
+        /* 样机展示 */
+        .hero-mockup {
+            margin-top: 48px;
+        }
+
+        .mockup-container {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .mockup-main {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .mockup-content {
+            width: 100%;
+            height: 500px;
+        }
+
+        .mockup-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 核心功能模块 */
+        .features {
+            padding: 80px 0;
+            background: var(--bg-primary);
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .features-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .features-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+
+        .feature-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: white;
+            font-size: 24px;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .feature-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        /* 数据概览 */
+        .stats {
+            padding: 60px 0;
+            background: var(--bg-secondary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* 页脚 */
+        .footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 48px 0 24px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 48px;
+            margin-bottom: 32px;
+        }
+
+        .footer-col h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .footer-col p {
+            font-size: 14px;
+            color: #9CA3AF;
+            line-height: 1.6;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col li {
+            margin-bottom: 12px;
+        }
+
+        .footer-col a {
+            color: #9CA3AF;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 24px;
+            border-top: 1px solid #374151;
+            color: #9CA3AF;
+            font-size: 14px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1280px) {
+            .container,
+            .navbar-content {
+                max-width: 1100px;
+            }
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .container,
+            .navbar-content {
+                max-width: 960px;
+                padding: 0 20px;
+            }
+            .hero-title {
+                font-size: 36px;
+            }
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container,
+            .navbar-content {
+                max-width: 100%;
+                padding: 0 16px;
+            }
+            .hero {
+                padding: 60px 0;
+            }
+            .hero-title {
+                font-size: 28px;
+            }
+            .hero-subtitle {
+                font-size: 16px;
+            }
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            .navbar-menu {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container,
+            .navbar-content {
+                padding: 0 12px;
+            }
+            .hero-title {
+                font-size: 24px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .feature-card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <div class="navbar-brand-icon">智</div>
+                <span>智能职业发展助手</span>
+            </div>
+            <div class="navbar-menu">
+                <a href="#features" class="navbar-item">核心功能</a>
+                <a href="job_scraper.html" class="navbar-item">岗位采集</a>
+                <a href="resume_manage.html" class="navbar-item">简历管理</a>
+                <a href="interview_coach.html" class="navbar-item">模拟面试</a>
+                <a href="settings.html" class="navbar-item">设置</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区 -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">智能职业发展<br>助力面试通关</h1>
+                <p class="hero-subtitle">AI 驱动的真实面试场景模拟，精准岗位匹配，让您的求职之路更简单、更高效。</p>
+                <div class="hero-buttons">
+                    <a href="job_scraper.html" class="btn btn-primary">开始采集岗位</a>
+                    <a href="interview_coach.html" class="btn btn-secondary">模拟面试</a>
+                </div>
+                
+                <!-- 样机展示 -->
+                <div class="hero-mockup">
+                    <div class="mockup-container">
+                        <div class="mockup-main">
+                            <div class="mockup-content">
+                                <img src="/photo/面试双模式.png" alt="面试双模式展示">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心功能模块 -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="features-header">
+                <h2 class="features-title">核心功能</h2>
+                <p class="features-subtitle">AI 驱动的智能求职解决方案，专注模拟面试服务</p>
+            </div>
+            
+            <div class="features-grid">
+                <!-- 岗位采集 -->
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3 class="feature-title">岗位采集</h3>
+                    <p class="feature-description">一键聚合实习僧、BOSS直聘、智联招聘、前程无忧、大厂官网五大平台实习岗位，自动去重入库，支持关键词+城市筛选。</p>
+                    <a href="job_scraper.html" class="btn btn-primary">开始采集</a>
+                </div>
+                <!-- 简历管理 -->
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3 class="feature-title">简历管理</h3>
+                    <p class="feature-description">上传 PDF/DOC 简历，AI 自动解析结构化信息，管理多份简历，设置主简历，为后续匹配与优化提供数据基础。</p>
+                    <a href="resume_manage.html" class="btn btn-primary">管理简历</a>
+                </div>
+                <!-- 岗位匹配 -->
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">岗位匹配</h3>
+                    <p class="feature-description">AI 深度语义匹配，从技能契合、岗位适配、薪资吸引力三维度评分，快速筛选最匹配您的实习岗位。</p>
+                    <a href="job_match.html" class="btn btn-primary">开始匹配</a>
+                </div>
+                <!-- 简历优化 -->
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3 class="feature-title">简历优化</h3>
+                    <p class="feature-description">针对目标岗位 AI 定制优化简历内容，一键生成专业 PDF，突出匹配关键词，让简历更具竞争力。</p>
+                    <a href="resume_optimize.html" class="btn btn-primary">优化简历</a>
+                </div>
+                <!-- 自动投递 -->
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">自动投递</h3>
+                    <p class="feature-description">支持浏览器自动化、实习僧批量一键投递、邮件投递三种方式，让求职更高效，告别重复操作。</p>
+                    <a href="auto_apply.html" class="btn btn-primary">开始投递</a>
+                </div>
+                <!-- 模拟面试 -->
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3 class="feature-title">模拟面试</h3>
+                    <p class="feature-description">AI 驱动的真实面试场景模拟，支持文字和视频双模式交互，提供实时专业反馈和改进建议，面试记录永久保存。</p>
+                    <a href="interview_coach.html" class="btn btn-primary">开始面试</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 数据概览 -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">100k+</div>
+                    <div class="stat-label">用户已使用</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">面试通过率提升</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">企业合作</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">40+</div>
+                    <div class="stat-label">行业覆盖</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h4>智能职业助手</h4>
+                    <p>助力您的职业成长，让求职更简单、更高效。基于 AI 大模型的智能求职解决方案，专注模拟面试服务。</p>
+                </div>
+                <div class="footer-col">
+                    <h4>功能导航</h4>
+                    <ul>
+                        <li><a href="job_scraper.html">岗位采集</a></li>
+                        <li><a href="resume_manage.html">简历管理</a></li>
+                        <li><a href="job_match.html">岗位匹配</a></li>
+                        <li><a href="resume_optimize.html">简历优化</a></li>
+                        <li><a href="auto_apply.html">自动投递</a></li>
+                        <li><a href="interview_coach.html">模拟面试</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>联系我们</h4>
+                    <ul>
+                        <li><a href="#">客服支持</a></li>
+                        <li><a href="#">意见反馈</a></li>
+                        <li><a href="#">商务合作</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2025 智能职业发展助手 - 助力您的职业成长 | 版权所有</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

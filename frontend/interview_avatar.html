@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>真人视频面试 - 智能职业发展助手</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    /* 蓝色主题样式 */
+    :root {
+      --primary: #2C7BE5;
+      --primary-dark: #1E40AF;
+      --primary-light: #3B82F6;
+      --bg-primary: #F5F9FC;
+      --bg-secondary: #FFFFFF;
+      --text-primary: #1A365D;
+      --text-secondary: #6B7280;
+      --text-muted: #9CA3AF;
+      --border: #E5E7EB;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow: 0 2px 8px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+      --radius: 8px;
+    }
+    
+    body { 
+      margin:0; 
+      background:var(--bg-primary); 
+      color:var(--text-primary); 
+      font-family:'Inter', 'Segoe UI', 'Microsoft YaHei', sans-serif; 
+    }
+    
+    header {
+      position:sticky;
+      top:0;
+      background:var(--bg-secondary);
+      border-bottom:1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      z-index:10
+    }
+    
+    .container {
+      max-width:1200px;
+      margin:0 auto;
+      padding:12px 24px;
+      width:100%;
+      box-sizing:border-box;
+    }
+    
+    .grid {
+      display:grid;
+      grid-template-columns: 2.2fr 0.8fr; 
+      gap:16px;
+    }
+    
+    .panel {
+      background:var(--bg-secondary);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    
+    .panel h3 {
+      margin:0;
+      padding:12px 14px;
+      border-bottom:1px solid var(--border);
+      color:var(--text-primary);
+      font-weight:600;
+    }
+    
+    .panel .body {
+      padding:12px 14px;
+    }
+    
+    #stage {
+      height:580px;
+      border-radius:var(--radius);
+      overflow:hidden;
+    }
+    
+    .controls {
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    
+    .btn {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      background:var(--bg-secondary);
+      color:var(--text-primary);
+      cursor:pointer;
+      transition: all 0.2s;
+      font-weight:500;
+    }
+    
+    .btn:hover {
+      background: var(--bg-primary);
+      border-color: var(--primary-light);
+    }
+    
+    .btn.primary {
+      background:var(--primary);
+      color:#fff;
+      border-color:var(--primary);
+    }
+    
+    .btn.primary:hover {
+      background:var(--primary-dark);
+      border-color:var(--primary-dark);
+    }
+    
+    .status {
+      font-size:12px;
+      color:var(--text-secondary);
+    }
+    
+    .tags {
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+    
+    .tag {
+      font-size:12px;
+      color:var(--primary);
+      background:var(--bg-primary);
+      border:1px solid var(--primary-light);
+      padding:4px 8px;
+      border-radius:999px;
+    }
+    
+    .bubble {
+      background:var(--bg-primary);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:10px;
+    }
+    
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    }
+    
+    .transcript {
+      min-height:60px;
+      max-height:120px;
+      overflow:auto;
+      white-space:pre-wrap;
+    }
+    
+    /* 视频容器样式 */
+    #video-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* 聊天样式 */
+    .chat-body {
+      flex: 1;
+      padding: 12px 14px;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+    
+    .message {
+      margin-bottom: 12px;
+      max-width: 80%;
+    }
+    
+    .bot-message {
+      background: var(--bg-primary);
+      padding: 12px;
+      border-radius: 16px 16px 16px 4px;
+      align-self: flex-start;
+      border: 1px solid var(--border);
+    }
+    
+    .user-message {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 12px;
+      border-radius: 16px 16px 4px 16px;
+      align-self: flex-end;
+      margin-left: auto;
+    }
+    
+    .chat-input {
+      padding: 12px 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 14px;
+      outline: none;
+    }
+    
+    input[type="text"]:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(44, 123, 229, 0.1);
+    }
+    
+    .voice-button {
+      background: var(--primary);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: white;
+    }
+    
+    .voice-button:hover {
+      background: var(--primary-dark);
+    }
+    
+    .voice-button.recording {
+      background: #EF4444;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(44, 123, 229, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <i class="fa-solid fa-user-tie" style="color:var(--primary)"></i>
+        <h2 style="margin:0">3D数字人｜真人面试模拟</h2>
+      </div>
+      <div class="tags">
+        <span class="tag">实时语音</span>
+        <span class="tag">视频面试</span>
+        <span class="tag">动态追问</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding:16px">
+    <div class="grid">
+      <section class="panel">
+        <h3>面试官</h3>
+        <div class="body">
+          <div id="stage" class="panel">
+            <div id="video-container">
+              <video id="interview-video" autoplay muted loop>
+                <source src="/videos/讲话.mp4" type="video/mp4">
+                您的浏览器不支持视频播放
+              </video>
+            </div>
+          </div>
+          <div class="controls" style="margin-top:12px">
+            <button id="btnStart" class="btn primary"><i class="fa-solid fa-microphone"></i> 开始回答</button>
+            <button id="btnStop" class="btn"><i class="fa-solid fa-stop"></i> 停止</button>
+            <button id="btnEnd" class="btn" style="background:#dc2626;color:white;border-color:#dc2626"><i class="fa-solid fa-flag-checkered"></i> 结束面试</button>
+            <span id="latency" class="status">状态：待机</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <h3>对话与识别</h3>
+        <div class="body">
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+            <strong>当前问题：</strong>
+            <span id="currentQ">（加载中...）</span>
+          </div>
+          <div class="chat-body" id="chat-body">
+            <div class="message bot-message">
+              <p>你好！我是你的AI面试官。请介绍一下你自己。</p>
+            </div>
+          </div>
+          <div class="chat-input">
+            <input type="text" id="user-input" placeholder="输入你的回答..." />
+            <div class="voice-button" id="voice-btn" title="语音输入">
+              <i class="ri-mic-line"></i>
+            </div>
+            <button id="send-btn" class="btn primary"><i class="ri-send-plane-fill"></i> 发送</button>
+          </div>
+          <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+            <span class="status">语速：<span id="wpm">—</span> WPM</span>
+            <span class="status">停顿：<span id="pauses">—</span></span>
+          </div>
+          <hr style="margin:12px 0;border:none;border-top:1px solid #eef2f7" />
+          <div class="bubble mono" id="eval">系统提示将显示在这里</div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    // 视频资源管理
+    const videoAssets = {
+      speaking: [
+        '/videos/讲话.mp4',
+        '/videos/讲话2.mp4',
+        '/videos/写简历发问.mp4'
+      ],
+      listening: [
+        '/videos/倾听.mp4',
+        '/videos/倾听2.mp4',
+        '/videos/倾听点头.mp4',
+        '/videos/面试官低头倾听.mp4'
+      ]
+    };
+    
+    // 状态管理
+    let currentState = 'speaking'; // speaking 或 listening
+    let currentVideoIndex = 0;
+    let currentSessionId = null;
+    let isProcessing = false;
+    
+    // DOM元素
+    const videoElement = document.getElementById('interview-video');
+    const chatBody = document.getElementById('chat-body');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const voiceBtn = document.getElementById('voice-btn');
+    const statusElement = document.getElementById('latency');
+    const currentQElement = document.getElementById('currentQ');
+    const evalElement = document.getElementById('eval');
+    const endBtn = document.getElementById('btnEnd');
+    
+    // 语音识别相关
+    let recognition = null;
+    let isRecording = false;
+    
+    // 对话历史
+    let conversationHistory = [
+      {
+        role: 'system',
+        content: '你是一个专业的面试官，正在进行模拟面试。请根据用户的回答提出相关的面试问题，保持对话流畅自然。'
+      }
+    ];
+    let interviewStartedAt = new Date().toISOString();
+    
+    // 初始化函数
+    function init() {
+      // 初始化视频
+      switchToSpeakingMode();
+      
+      // 初始化聊天功能
+      initChat();
+      
+      // 初始化TTS
+      initTTS();
+      
+      // 测试FastGPT API连接
+      testFastGPTConnection();
+      
+      // 播放初始欢迎消息
+      const welcomeMessage = '你好！我是你的AI面试官。请介绍一下你自己。';
+      currentQElement.textContent = welcomeMessage;
+      speakText(welcomeMessage);
+      
+      // 设置状态
+      updateStatus('准备就绪');
+    }
+    
+    // 测试FastGPT API连接
+    function testFastGPTConnection() {
+      console.log('测试FastGPT API连接...');
+      // 发送一个测试消息到FastGPT API
+      const testMessage = '测试连接';
+      const testMessages = [
+        {
+          role: 'system',
+          content: '你是一个专业的面试官，正在进行模拟面试。'
+        },
+        {
+          role: 'user',
+          content: testMessage
+        }
+      ];
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 300000);
+      
+      fetch('/api/interview-chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          messages: testMessages,
+          sessionId: 'test_session_' + Date.now()
+        }),
+        signal: controller.signal
+      })
+      .then(response => {
+        clearTimeout(timeoutId);
+        if (!response.ok) {
+          throw new Error('API调用失败');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.success) {
+          console.log('FastGPT API连接成功:', data);
+          updateStatus('FastGPT连接成功');
+        } else {
+          console.error('FastGPT API返回错误:', data.message);
+          updateStatus('FastGPT连接失败');
+        }
+      })
+      .catch(error => {
+        console.error('FastGPT API连接失败:', error);
+        updateStatus('FastGPT连接失败');
+      });
+    }
+    
+    // 切换到讲话模式
+    function switchToSpeakingMode() {
+      currentState = 'speaking';
+      // 随机选择一个讲话视频
+      const randomIndex = Math.floor(Math.random() * videoAssets.speaking.length);
+      videoElement.src = videoAssets.speaking[randomIndex];
+      videoElement.play();
+    }
+    
+    // 切换到倾听模式
+    function switchToListeningMode() {
+      currentState = 'listening';
+      // 随机选择一个倾听视频
+      const randomIndex = Math.floor(Math.random() * videoAssets.listening.length);
+      videoElement.src = videoAssets.listening[randomIndex];
+      videoElement.play();
+      // 启用输入
+      userInput.disabled = false;
+      sendBtn.disabled = false;
+    }
+    
+    // 初始化聊天功能
+    function initChat() {
+      // 发送按钮点击事件
+      sendBtn.addEventListener('click', sendMessage);
+      
+      // 回车键发送
+      userInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          sendMessage();
+        }
+      });
+      
+      // 语音输入按钮点击事件
+      voiceBtn.addEventListener('click', toggleVoiceInput);
+      
+      // 结束面试按钮点击事件
+      if (endBtn) {
+        endBtn.addEventListener('click', handleEndInterview);
+      }
+    }
+    
+    // 结束面试处理
+    async function handleEndInterview() {
+      if (!confirm('确定要结束面试吗？')) return;
+      
+      // 禁用按钮
+      if (endBtn) endBtn.disabled = true;
+      updateStatus('生成报告中...', true);
+      
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 300000);
+        
+        const response = await fetch('/api/interview/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sessionId: currentSessionId,
+            messages: conversationHistory,
+            type: 'video'
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        
+        const data = await response.json();
+        if (data.success && data.report) {
+          const report = convertApiReportToFrontend(data.report);
+          localStorage.setItem('interviewResult', JSON.stringify(report));
+          alert(`面试结束！评分：${report.overallScore} 分（${report.scoreLevel}）\n正在跳转到报告页...`);
+          window.location.href = '/interview_report.html';
+        } else {
+          alert('生成报告失败，请稍后重试。');
+          if (endBtn) endBtn.disabled = false;
+          updateStatus('就绪');
+        }
+      } catch (e) {
+        console.error('生成报告失败:', e);
+        alert('生成报告失败，请稍后重试。');
+        if (endBtn) endBtn.disabled = false;
+        updateStatus('就绪');
+      }
+    }
+    
+    // 将API报告转换为前端格式
+    function convertApiReportToFrontend(report) {
+      // 如果是原始 Markdown 格式，需要解析
+      if (report && report.is_raw_markdown) {
+        return parseMarkdownReport(report.raw_markdown, report.conversation_stats);
+      }
+      
+      // 新的统一JSON格式转换
+      if (report && (report.overall_score !== undefined || report.quantitative_assessment !== undefined)) {
+        return {
+          overallScore: report.overall_score || 50,
+          scoreLevel: report.score_level || '一般',
+          scoreDetails: (report.quantitative_assessment || report.score_details || []).map(d => ({
+            dimension: d.dimension || '',
+            weight: d.weight || '0%',
+            score: d.score || '0/0',
+            weightedScore: d.weighted_score || 0,
+            criteria: d.rationale || d.criteria || ''
+          })),
+          strengths: (report.qualitative_summary && report.qualitative_summary.strengths) || report.strengths || [],
+          areasForImprovement: (report.qualitative_summary && report.qualitative_summary.areas_for_improvement) || report.areas_for_improvement || [],
+          suggestions: {
+            jobSearch: (report.targeted_suggestions && report.targeted_suggestions.job_search) || (report.suggestions && report.suggestions.job_search) || '',
+            careerGrowth: (report.targeted_suggestions && report.targeted_suggestions.career_growth) || (report.suggestions && report.suggestions.career_growth) || []
+          },
+          conversationStats: {
+            userMessageCount: (report.conversation_stats && report.conversation_stats.user_message_count) || 0,
+            totalUserMessageLength: (report.conversation_stats && report.conversation_stats.total_user_message_length) || 0,
+            meaningfulResponses: (report.conversation_stats && report.conversation_stats.meaningful_responses) || 0
+          }
+        };
+      }
+      
+      // 默认报告
+      return {
+        overallScore: 60,
+        scoreLevel: '一般',
+        scoreDetails: [
+          { dimension: '岗位适配度', weight: '40%', score: '24/40', weightedScore: 24, criteria: '根据面试表现评估' },
+          { dimension: '核心能力表现', weight: '40%', score: '24/40', weightedScore: 24, criteria: '根据面试表现评估' },
+          { dimension: '成长潜力', weight: '20%', score: '12/20', weightedScore: 12, criteria: '根据面试表现评估' }
+        ],
+        strengths: ['完成了面试流程'],
+        areasForImprovement: ['建议提供更详细的回答'],
+        suggestions: {
+          jobSearch: '继续提升专业技能，积累更多项目经验。',
+          careerGrowth: ['提升面试技巧', '积累更多实际项目经验', '培养沟通协作能力']
+        },
+        conversationStats: report && report.conversation_stats ? report.conversation_stats : {
+          userMessageCount: 0,
+          totalUserMessageLength: 0,
+          meaningfulResponses: 0
+        }
+      };
+    }
+    
+    // 解析 Markdown 格式的报告
+    function parseMarkdownReport(markdown, conversationStats) {
+      // 先尝试从 Markdown 中提取 JSON 数据
+      const jsonMatch = markdown.match(/\{[\s\S]*?"overall_score"[\s\S]*?\}/);
+      if (jsonMatch) {
+        try {
+          const jsonData = JSON.parse(jsonMatch[0]);
+          console.log('[报告解析] 从Markdown中提取到JSON数据:', jsonData);
+          // 使用结构化数据转换函数
+          return convertSnakeToCamel(jsonData, conversationStats);
+        } catch (e) {
+          console.log('[报告解析] JSON提取失败，继续Markdown解析');
+        }
+      }
+      
+      // snake_case 转 camelCase 辅助函数
+      function convertSnakeToCamel(data, stats) {
+        return {
+          overallScore: data.overall_score || 50,
+          scoreLevel: data.score_level || '一般',
+          scoreDetails: (data.score_details || []).map(d => ({
+            dimension: d.dimension || '',
+            weight: d.weight || '0%',
+            score: d.score || '0/0',
+            weightedScore: d.weighted_score || 0,
+            criteria: d.criteria || ''
+          })),
+          strengths: data.strengths || [],
+          areasForImprovement: data.areas_for_improvement || [],
+          suggestions: {
+            jobSearch: (data.suggestions && data.suggestions.job_search) || '',
+            careerGrowth: (data.suggestions && data.suggestions.career_growth) || []
+          },
+          conversationStats: stats || {
+            userMessageCount: 0,
+            totalUserMessageLength: 0,
+            meaningfulResponses: 0
+          }
+        };
+      }
+      
+      const result = {
+        overallScore: 60,
+        scoreLevel: '一般',
+        scoreDetails: [],
+        strengths: [],
+        areasForImprovement: [],
+        suggestions: { jobSearch: '', careerGrowth: [] },
+        conversationStats: conversationStats || { userMessageCount: 0, totalUserMessageLength: 0, meaningfulResponses: 0 }
+      };
+      
+      // 提取总分
+      const totalMatch = markdown.match(/\*\*总分\*\*.*?\|\s*\*\*(\d+)\*\*/s);
+      if (totalMatch) {
+        result.overallScore = parseInt(totalMatch[1], 10);
+      } else {
+        const scoreMatch = markdown.match(/\|\s*总分\s*\|.*?\|\s*(\d+)\s*\|/);
+        if (scoreMatch) result.overallScore = parseInt(scoreMatch[1], 10);
+      }
+      
+      // 提取评分等级
+      if (markdown.includes('强烈推荐') || markdown.includes('优秀')) {
+        result.scoreLevel = '优秀';
+      } else if (markdown.includes('良好')) {
+        result.scoreLevel = '良好';
+      } else if (markdown.includes('及格')) {
+        result.scoreLevel = '及格';
+      } else if (markdown.includes('较差')) {
+        result.scoreLevel = '较差';
+      }
+      
+      // 解析评分表格
+      const tableMatch = markdown.match(/\|\s*评分维度\s*\|.*?\|\s*得分\s*\|.*?(?:\n\|[-|]+\|)*\n((?:\|[^\n]+\n)+)/);
+      if (tableMatch) {
+        const rows = tableMatch[1].trim().split('\n');
+        rows.forEach(row => {
+          const cols = row.split('|').map(c => c.trim()).filter(c => c);
+          if (cols.length >= 3) {
+            const dimension = cols[0].replace(/\*\*/g, '');
+            const scorePart = cols[2];
+            const scoreNum = parseInt(scorePart.match(/(\d+)/)?.[1] || '0', 10);
+            
+            let weight = '25%', maxScore = 25;
+            if (dimension.includes('适配') || dimension.includes('匹配')) {
+              weight = '40%'; maxScore = 40;
+            } else if (dimension.includes('能力') || dimension.includes('表现')) {
+              weight = '40%'; maxScore = 40;
+            } else if (dimension.includes('潜力') || dimension.includes('成长')) {
+              weight = '20%'; maxScore = 20;
+            }
+            
+            result.scoreDetails.push({
+              dimension,
+              weight,
+              score: `${scoreNum}/${maxScore}`,
+              weightedScore: scoreNum,
+              criteria: cols[3] || ''
+            });
+          }
+        });
+      }
+      
+      if (result.scoreDetails.length === 0) {
+        const score = result.overallScore;
+        result.scoreDetails = [
+          { dimension: '岗位适配度', weight: '40%', score: `${Math.round(score * 0.4)}/40`, weightedScore: Math.round(score * 0.4), criteria: '根据面试表现评估' },
+          { dimension: '核心能力表现', weight: '40%', score: `${Math.round(score * 0.4)}/40`, weightedScore: Math.round(score * 0.4), criteria: '根据面试表现评估' },
+          { dimension: '成长潜力', weight: '20%', score: `${Math.round(score * 0.2)}/20`, weightedScore: Math.round(score * 0.2), criteria: '根据面试表现评估' }
+        ];
+      }
+      
+      // 提取优势
+      const strengthSection = markdown.match(/(?:核心优势|✨.*优势)[:：]?\s*\n((?:(?!###|##|---|📌|📈).+\n)+)/s);
+      if (strengthSection) {
+        const lines = strengthSection[1].trim().split('\n');
+        lines.forEach(line => {
+          line = line.trim().replace(/^[*-]\s*/, '').replace(/^\d+[.、]\s*/, '');
+          if (line && line.length > 5) result.strengths.push(line);
+        });
+      }
+      if (result.strengths.length === 0) {
+        const strengthMatches = markdown.matchAll(/(?:^|\n)\s*(?:[*•]|[0-9]+[.、])\s*([^*\n]+(?:技术|经验|能力|优势|清晰|扎实|展示)[^\n]*)/g);
+        for (const match of strengthMatches) {
+          if (match[1] && match[1].length > 10) result.strengths.push(match[1].trim());
+        }
+      }
+      
+      // 提取待提升点
+      const improvementSection = markdown.match(/(?:待提升|📌.*提升)[:：]?\s*\n((?:(?!###|##|---|✨|🚀).+\n)+)/s);
+      if (improvementSection) {
+        const lines = improvementSection[1].trim().split('\n');
+        lines.forEach(line => {
+          line = line.trim().replace(/^[*-]\s*/, '').replace(/^\d+[.、]\s*/, '');
+          if (line && line.length > 5) result.areasForImprovement.push(line);
+        });
+      }
+      if (result.areasForImprovement.length === 0) {
+        const improvementMatches = markdown.matchAll(/(?:^|\n)\s*(?:[*•]|[0-9]+[.、])\s*([^*\n]+(?:建议|提升|可以|需要)[^\n]*)/g);
+        for (const match of improvementMatches) {
+          if (match[1] && match[1].length > 10) result.areasForImprovement.push(match[1].trim());
+        }
+      }
+      
+      // 提取求职建议
+      const jobSuggestionMatch = markdown.match(/(?:求职建议|求职.*建议)[:：]?\s*[-–]?\s*(.+?)(?:\n|$)/s);
+      if (jobSuggestionMatch) {
+        result.suggestions.jobSearch = jobSuggestionMatch[1].trim();
+      }
+      
+      // 提取职业成长建议
+      const careerSection = markdown.match(/(?:职业成长|成长建议)[:：]?\s*\n((?:(?:(?!###|##|---|🎯|💡).+\n))+)/s);
+      if (careerSection) {
+        const items = careerSection[1].match(/(?:^|\n)\s*(?:[*•]|[0-9]+[.、])\s*(.+)/g);
+        if (items) {
+          result.suggestions.careerGrowth = items.map(item => item.replace(/^[*\n\s]+/, '').replace(/^[*-]\s*/, '').replace(/^\d+[.、]\s*/, '').trim());
+        }
+      }
+      
+      if (result.strengths.length === 0) result.strengths = ['面试表现良好'];
+      if (result.areasForImprovement.length === 0) result.areasForImprovement = ['建议继续提升专业技能'];
+      if (!result.suggestions.jobSearch) result.suggestions.jobSearch = '继续提升专业技能，积累更多项目经验。';
+      if (result.suggestions.careerGrowth.length === 0) {
+        result.suggestions.careerGrowth = ['持续学习新技术', '积累更多实际项目经验', '培养业务理解能力'];
+      }
+      
+      console.log('[报告解析] Markdown解析完成:', result);
+      return result;
+    }
+    
+    // 初始化语音识别
+    function initVoiceRecognition() {
+      if ('webkitSpeechRecognition' in window) {
+        recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'zh-CN';
+        
+        recognition.onstart = function() {
+          console.log('语音识别开始');
+          isRecording = true;
+          voiceBtn.classList.add('recording');
+          updateStatus('正在聆听...');
+        };
+        
+        recognition.onresult = function(event) {
+          const transcript = event.results[0][0].transcript;
+          console.log('语音识别结果:', transcript);
+          userInput.value = transcript;
+        };
+        
+        recognition.onend = function() {
+          console.log('语音识别结束');
+          isRecording = false;
+          voiceBtn.classList.remove('recording');
+          updateStatus('就绪');
+        };
+        
+        recognition.onerror = function(event) {
+          console.error('语音识别错误:', event);
+          isRecording = false;
+          voiceBtn.classList.remove('recording');
+          updateStatus('就绪');
+        };
+      } else {
+        console.warn('语音识别不支持');
+      }
+    }
+    
+    // 切换语音输入
+    function toggleVoiceInput() {
+      if (!recognition) {
+        initVoiceRecognition();
+      }
+      
+      if (isRecording) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    }
+    
+    // 初始化TTS
+    function initTTS() {
+      // 检查浏览器是否支持Web Speech API
+      if ('speechSynthesis' in window) {
+        console.log('Web Speech API 支持');
+        console.log('语音合成可用语音:', speechSynthesis.getVoices());
+      } else {
+        console.warn('Web Speech API 不支持，使用默认语音');
+      }
+    }
+    
+    // 发送消息
+    function sendMessage() {
+      const message = userInput.value.trim();
+      if (message && !isProcessing) {
+        // 添加用户消息
+        addMessage(message, 'user');
+        userInput.value = '';
+        
+        // 禁用输入
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+        
+        // 更新状态
+        updateStatus('处理中...', true);
+        isProcessing = true;
+        
+        // 发送到FastGPT API
+        sendToFastGPT(message);
+      }
+    }
+    
+    // 发送到FastGPT API
+    function sendToFastGPT(userMessage) {
+      // 将用户消息添加到历史
+      conversationHistory.push({ role: 'user', content: userMessage });
+      
+      // 使用AbortController设置5分钟超时（匹配后端300s）
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 300000);
+      
+      // 调用API
+      fetch('/api/interview-chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          messages: conversationHistory,
+          sessionId: currentSessionId,
+          type: 'video'
+        }),
+        signal: controller.signal
+      })
+      .then(response => {
+        clearTimeout(timeoutId);
+        if (!response.ok) {
+          throw new Error(`API调用失败 (${response.status})`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('FastGPT API返回:', data);
+        
+        if (data.success) {
+          const botMessage = data.message;
+          // 检测降级响应
+          if (data.fallback) {
+            console.warn('[视频面试] AI服务超时，使用预设问题');
+            updateStatus('AI响应较慢，使用预设问题');
+          }
+          // 将AI回复添加到历史
+          conversationHistory.push({ role: 'assistant', content: botMessage });
+          
+          // 添加机器人消息
+          addMessage(botMessage, 'bot');
+          currentQElement.textContent = botMessage;
+          
+          // 播放机器人消息
+          speakText(botMessage);
+          
+          // 切换到讲话模式
+          switchToSpeakingMode();
+          
+          // 延迟切换到倾听模式
+          setTimeout(() => {
+            switchToListeningMode();
+            isProcessing = false;
+            updateStatus('就绪');
+          }, 3000);
+        } else {
+          console.error('FastGPT API返回错误:', data.message);
+          addMessage('抱歉，我遇到了一些问题，请稍后再试。', 'bot');
+          isProcessing = false;
+          updateStatus('错误');
+        }
+      })
+      .catch(error => {
+        console.error('FastGPT API调用失败:', error);
+        addMessage('抱歉，我遇到了一些问题，请稍后再试。', 'bot');
+        isProcessing = false;
+        updateStatus('错误');
+      });
+    }
+    
+    // 添加消息
+    function addMessage(text, type) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}-message`;
+      messageDiv.innerHTML = `<p>${text}</p>`;
+      chatBody.appendChild(messageDiv);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+    
+    // 文字转语音
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-CN';
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        speechSynthesis.speak(utterance);
+      }
+    }
+    
+    // 更新状态
+    function updateStatus(text, isLoading = false) {
+      if (isLoading) {
+        statusElement.innerHTML = `状态：${text} <span class="loading"></span>`;
+      } else {
+        statusElement.textContent = `状态：${text}`;
+      }
+    }
+    
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

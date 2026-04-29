@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统设置 - 智能职业发展助手</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+        :root {
+            --primary: #2C7BE5; --primary-dark: #1E40AF;
+            --bg-primary: #F5F9FC; --bg-secondary: #FFFFFF;
+            --text-primary: #1A365D; --text-secondary: #6B7280; --text-muted: #9CA3AF;
+            --border: #E5E7EB; --success-bg: #E6F7E6; --success-text: #166534;
+            --danger-bg: #FCE8E6; --danger-text: #991B1B;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --shadow: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08); --radius: 8px;
+        }
+        body { background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        .navbar { background: var(--bg-secondary); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .navbar-content { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; max-width: 1200px; margin: 0 auto; }
+        .navbar-brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--text-primary); text-decoration: none; }
+        .brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; }
+        .navbar-back { color: var(--primary); text-decoration: none; font-size: 14px; }
+        .container { max-width: 800px; margin: 0 auto; padding: 32px 24px; }
+        .page-header { margin-bottom: 32px; }
+        .page-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .page-subtitle { font-size: 15px; color: var(--text-secondary); }
+        .card { background: white; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 24px; margin-bottom: 24px; }
+        .card-title { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+        .card-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .form-label { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+        .form-input { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; color: var(--text-primary); background: white; outline: none; font-family: monospace; }
+        .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(44,123,229,0.1); }
+        .form-hint { font-size: 12px; color: var(--text-muted); }
+        .btn { padding: 10px 24px; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; text-decoration: none; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-primary:disabled { background: #93c5fd; cursor: not-allowed; }
+        .btn-secondary { background: white; color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-success { background: #10B981; color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-sm { padding: 6px 14px; font-size: 13px; }
+        .alert { padding: 12px 16px; border-radius: var(--radius); font-size: 14px; margin-bottom: 16px; }
+        .alert-info { background: #EFF6FF; color: #1d4ed8; border: 1px solid #BFDBFE; }
+        .alert-success { background: var(--success-bg); color: var(--success-text); border: 1px solid #BBF7D0; }
+        .alert-error { background: var(--danger-bg); color: var(--danger-text); border: 1px solid #FECACA; }
+        .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .hidden { display: none !important; }
+        .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .status-connected { background: #10B981; }
+        .status-disconnected { background: #EF4444; }
+        .status-unknown { background: var(--text-muted); }
+        .info-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: var(--text-secondary); }
+        .info-value { color: var(--text-primary); font-weight: 500; font-family: monospace; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        /* 响应式设计 */
+        @media (max-width: 1280px) {
+            .container,
+            .navbar-content {
+                max-width: 900px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .container,
+            .navbar-content {
+                max-width: 800px;
+                padding: 0 20px;
+            }
+            .container {
+                padding: 28px 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container,
+            .navbar-content {
+                max-width: 100%;
+                padding: 0 16px;
+            }
+            .container {
+                padding: 24px 16px;
+            }
+            .page-title {
+                font-size: 24px;
+            }
+            .card {
+                padding: 20px;
+            }
+            .info-row {
+                font-size: 13px;
+                padding: 6px 0;
+            }
+            .info-value {
+                max-width: 50%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container,
+            .navbar-content {
+                padding: 0 12px;
+            }
+            .container {
+                padding: 20px 12px;
+            }
+            .page-title {
+                font-size: 20px;
+            }
+            .card {
+                padding: 16px 12px;
+            }
+            .info-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+                padding: 8px 0;
+            }
+            .info-value {
+                max-width: 100%;
+                word-break: break-all;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="navbar-content">
+        <a href="/" class="navbar-brand"><div class="brand-icon">智</div>智能职业发展助手</a>
+        <a href="/" class="navbar-back">← 返回首页</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">⚙️ 系统设置</h1>
+        <p class="page-subtitle">配置 AI 模型参数和系统选项</p>
+    </div>
+
+    <!-- 当前配置状态 -->
+    <div class="card">
+        <div class="card-title">📊 当前配置</div>
+        <div class="card-desc">当前系统使用的 AI 模型和 API 配置信息</div>
+        <div id="currentConfigAlert" class="hidden"></div>
+        <div id="currentConfig">
+            <div style="text-align:center;padding:20px;color:var(--text-muted);">加载中...</div>
+        </div>
+        <hr class="divider">
+        <button class="btn btn-secondary btn-sm" onclick="loadCurrentConfig()">🔄 刷新配置</button>
+    </div>
+
+    <!-- 豆包模型设置 -->
+    <div class="card">
+        <div class="card-title">🤖 豆包 AI 模型设置</div>
+        <div class="card-desc">配置用于简历解析、岗位匹配、简历优化等功能的豆包 API 参数</div>
+
+        <div id="doubaoAlert" class="hidden"></div>
+
+        <div class="form-group">
+            <label class="form-label">API Key（密钥）</label>
+            <input type="password" id="doubaoApiKey" class="form-input" placeholder="sk-... 或 af6ff3bf-..." autocomplete="off">
+            <span class="form-hint">豆包 API Key，可在火山引擎控制台获取</span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">接入点 ID（Endpoint ID）</label>
+            <input type="text" id="doubaoEndpoint" class="form-input" placeholder="ep-xxxxxxxxxxxxxxxx-xxxxx">
+            <span class="form-hint">豆包模型接入点 ID，格式为 ep-xxx...</span>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="saveDobaoConfig()" id="saveDoubaoBtn">
+                <span id="saveDoubaoContent">💾 保存配置</span>
+            </button>
+            <button class="btn btn-secondary" onclick="testDoubaoConnection()" id="testDoubaoBtn">
+                <span id="testDoubaoContent">🔌 测试连接</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 测试结果 -->
+    <div class="card hidden" id="testResultCard">
+        <div class="card-title">🔬 连接测试结果</div>
+        <div id="testResult"></div>
+    </div>
+
+    <!-- 邮件 SMTP 设置 -->
+    <div class="card">
+        <div class="card-title">📧 邮件投递设置</div>
+        <div class="card-desc">配置自动邮件投递功能使用的 SMTP 邮箱</div>
+
+        <div id="smtpAlert" class="hidden"></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">SMTP 服务器</label>
+                <input type="text" id="smtpHost" class="form-input" placeholder="smtp.qq.com">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">SMTP 端口</label>
+                <input type="number" id="smtpPort" class="form-input" placeholder="465">
+            </div>
+        </div>
+        <div class="form-group" style="margin-top:16px;">
+            <label class="form-label">发件邮箱</label>
+            <input type="email" id="smtpEmail" class="form-input" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+            <label class="form-label">邮箱授权码（非登录密码）</label>
+            <input type="password" id="smtpPassword" class="form-input" placeholder="请输入授权码" autocomplete="off">
+            <span class="form-hint">QQ邮箱请在设置 → 账户中开启 POP3/SMTP 服务并获取授权码</span>
+        </div>
+
+        <button class="btn btn-primary" onclick="saveSmtpConfig()" id="saveSmtpBtn">
+            <span id="saveSmtpContent">💾 保存邮件设置</span>
+        </button>
+    </div>
+</div>
+
+<script>
+async function loadCurrentConfig() {
+    try {
+        const res = await fetch('/api/config/get');
+        const data = await res.json();
+        const container = document.getElementById('currentConfig');
+
+        if (!data.success) {
+            container.innerHTML = `<div class="alert alert-error">加载失败：${data.error}</div>`;
+            return;
+        }
+
+        const maskedKey = data.doubao_api_key_masked || '未配置';
+        const endpointId = data.doubao_model || '未配置';
+        const smtpHost = data.smtp_host || '未配置';
+        const smtpEmail = data.smtp_email || '未配置';
+        const smtpConfigured = data.smtp_configured ? '✅ 已配置' : '❌ 未配置';
+
+        container.innerHTML = `
+            <div class="info-row">
+                <span class="info-label">豆包 API Key</span>
+                <span class="info-value">${maskedKey}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">接入点 ID</span>
+                <span class="info-value">${endpointId}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">SMTP 服务器</span>
+                <span class="info-value">${smtpHost}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">发件邮箱</span>
+                <span class="info-value">${smtpEmail}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">邮件投递</span>
+                <span class="info-value">${smtpConfigured}</span>
+            </div>
+        `;
+
+        // 预填表单
+        if (data.doubao_model) document.getElementById('doubaoEndpoint').value = data.doubao_model;
+        if (data.smtp_host) document.getElementById('smtpHost').value = data.smtp_host;
+        if (data.smtp_port) document.getElementById('smtpPort').value = data.smtp_port;
+        if (data.smtp_email) document.getElementById('smtpEmail').value = data.smtp_email;
+
+    } catch (e) {
+        document.getElementById('currentConfig').innerHTML = `<div class="alert alert-error">无法连接到服务器</div>`;
+    }
+}
+
+async function saveDobaoConfig() {
+    const apiKey = document.getElementById('doubaoApiKey').value.trim();
+    const endpoint = document.getElementById('doubaoEndpoint').value.trim();
+
+    if (!apiKey && !endpoint) {
+        showAlert('doubaoAlert', 'error', '⚠️ 请至少填写 API Key 或接入点 ID');
+        return;
+    }
+
+    const btn = document.getElementById('saveDoubaoBtn');
+    btn.disabled = true;
+    document.getElementById('saveDoubaoContent').innerHTML = '<span class="spinner"></span> 保存中...';
+
+    try {
+        const payload = {};
+        if (apiKey) payload.doubao_api_key = apiKey;
+        if (endpoint) payload.doubao_model = endpoint;
+
+        const res = await fetch('/api/config/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            showAlert('doubaoAlert', 'success', '✅ 豆包配置已保存，立即生效');
+            if (apiKey) document.getElementById('doubaoApiKey').value = '';
+            loadCurrentConfig();
+        } else {
+            showAlert('doubaoAlert', 'error', `❌ 保存失败：${data.error}`);
+        }
+    } catch (e) {
+        showAlert('doubaoAlert', 'error', `❌ 请求失败：${e.message}`);
+    } finally {
+        btn.disabled = false;
+        document.getElementById('saveDoubaoContent').textContent = '💾 保存配置';
+    }
+}
+
+async function testDoubaoConnection() {
+    const apiKey = document.getElementById('doubaoApiKey').value.trim();
+    const endpoint = document.getElementById('doubaoEndpoint').value.trim();
+
+    const btn = document.getElementById('testDoubaoBtn');
+    btn.disabled = true;
+    document.getElementById('testDoubaoContent').innerHTML = '<span class="spinner" style="border-color:rgba(0,0,0,0.2);border-top-color:var(--primary);"></span> 测试中...';
+
+    document.getElementById('testResultCard').classList.remove('hidden');
+    document.getElementById('testResult').innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-muted);">正在连接豆包 API...</div>';
+
+    try {
+        const payload = {};
+        if (apiKey) payload.api_key = apiKey;
+        if (endpoint) payload.model = endpoint;
+
+        const res = await fetch('/api/config/test-doubao', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            document.getElementById('testResult').innerHTML = `
+                <div class="alert alert-success">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                        <span class="status-dot status-connected"></span>
+                        <strong>连接成功！</strong>
+                    </div>
+                    <div style="font-size:13px;">
+                        <div>模型：${data.model || endpoint || '默认'}</div>
+                        ${data.response ? `<div style="margin-top:8px;">AI 回复：<em>${data.response}</em></div>` : ''}
+                        ${data.latency_ms ? `<div>延迟：${data.latency_ms} ms</div>` : ''}
+                    </div>
+                </div>
+            `;
+        } else {
+            document.getElementById('testResult').innerHTML = `
+                <div class="alert alert-error">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                        <span class="status-dot status-disconnected"></span>
+                        <strong>连接失败</strong>
+                    </div>
+                    <div style="font-size:13px;">${data.error || '未知错误'}</div>
+                </div>
+            `;
+        }
+    } catch (e) {
+        document.getElementById('testResult').innerHTML = `
+            <div class="alert alert-error">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="status-dot status-disconnected"></span>
+                    <strong>请求失败：${e.message}</strong>
+                </div>
+            </div>
+        `;
+    } finally {
+        btn.disabled = false;
+        document.getElementById('testDoubaoContent').textContent = '🔌 测试连接';
+    }
+}
+
+async function saveSmtpConfig() {
+    const host = document.getElementById('smtpHost').value.trim();
+    const port = document.getElementById('smtpPort').value.trim();
+    const email = document.getElementById('smtpEmail').value.trim();
+    const password = document.getElementById('smtpPassword').value.trim();
+
+    if (!host || !email) {
+        showAlert('smtpAlert', 'error', '⚠️ 请填写 SMTP 服务器和发件邮箱');
+        return;
+    }
+
+    const btn = document.getElementById('saveSmtpBtn');
+    btn.disabled = true;
+    document.getElementById('saveSmtpContent').innerHTML = '<span class="spinner"></span> 保存中...';
+
+    try {
+        const payload = { smtp_host: host };
+        if (port) payload.smtp_port = parseInt(port);
+        if (email) payload.smtp_email = email;
+        if (password) payload.smtp_password = password;
+
+        const res = await fetch('/api/config/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            showAlert('smtpAlert', 'success', '✅ 邮件设置已保存，立即生效');
+            if (password) document.getElementById('smtpPassword').value = '';
+            loadCurrentConfig();
+        } else {
+            showAlert('smtpAlert', 'error', `❌ 保存失败：${data.error}`);
+        }
+    } catch (e) {
+        showAlert('smtpAlert', 'error', `❌ 请求失败：${e.message}`);
+    } finally {
+        btn.disabled = false;
+        document.getElementById('saveSmtpContent').textContent = '💾 保存邮件设置';
+    }
+}
+
+function showAlert(id, type, msg) {
+    const el = document.getElementById(id);
+    el.className = `alert alert-${type}`;
+    el.innerHTML = msg;
+    el.classList.remove('hidden');
+}
+
+loadCurrentConfig();
+</script>
+</body>
+</html>

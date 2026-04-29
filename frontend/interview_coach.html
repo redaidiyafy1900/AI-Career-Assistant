@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>文字面试 - 智能职业发展助手</title>
+    <style>
+        /* 全局样式 - 蓝色主题 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        :root {
+            --primary: #2C7BE5;
+            --primary-dark: #1E40AF;
+            --primary-light: #3B82F6;
+            --bg-primary: #F5F9FC;
+            --bg-secondary: #FFFFFF;
+            --text-primary: #1A365D;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --border: #E5E7EB;
+            --success-bg: #E6F7E6;
+            --success-text: #166534;
+            --danger-bg: #FCE8E6;
+            --danger-text: #991B1B;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+            --radius: 8px;
+        }
+
+        /* 导航栏样式 */
+        .navbar {
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .navbar-back {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* 功能步骤导航栏 */
+        .step-nav {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 8px 24px;
+        }
+
+        .step-nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            flex-wrap: wrap;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .step-link {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .step-link:hover {
+            color: var(--primary);
+            background: #EFF6FF;
+        }
+
+        .step-link.active {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .step-arrow {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin: 0 1px;
+        }
+
+        .step-nav-btns {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-step {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: white;
+            color: var(--text-secondary);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-step:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* 页面容器 */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            background: var(--bg-secondary);
+            position: relative;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        /* 标题样式 */
+        .page-title {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 1;
+            padding: 0 20px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .page-title p {
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        /* 功能卡片容器 */
+        .cards-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 1;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-light);
+        }
+
+        .card .card-emoji {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.5;
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .card-icon i {
+            font-size: 28px;
+            color: white;
+        }
+
+        .card h2 {
+            font-size: 22px;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card h2 span {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        .card p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+            line-height: 1.7;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            margin-bottom: 28px;
+            display: block;
+            border: 1px solid var(--border);
+        }
+
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .tag {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--primary);
+            border: 1px solid var(--primary-light);
+            background: var(--bg-primary);
+        }
+
+        .card a {
+            font-size: 15px;
+            color: var(--primary);
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            padding: 8px 0;
+            border-bottom: 2px solid var(--primary-light);
+            transition: all 0.2s;
+        }
+
+        .card a:hover {
+            color: var(--primary-dark);
+        }
+
+        /* 动态高亮条容器 */
+        .highlight-container {
+            position: relative;
+            width: calc(100% - 40px);
+            margin: 0 20px 60px 20px;
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            z-index: 1;
+            border: 1px solid var(--border);
+        }
+
+        /* 功能文字容器 */
+        .features-text {
+            display: flex;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 单个功能文字项 */
+        .feature-text-item {
+            flex: 1;
+            padding: 20px 15px;
+            text-align: center;
+            font-size: 16px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        /* 高亮背景 */
+        .highlight-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 50%;
+            background: linear-gradient(90deg, var(--primary-light) 0%, var(--primary) 100%);
+            border-radius: var(--radius);
+            z-index: 1;
+            transition: transform 1s ease-in-out;
+            animation: moveHighlight 8s infinite;
+        }
+
+        /* 高亮移动动画 */
+        @keyframes moveHighlight {
+
+            0%,
+            40% {
+                transform: translateX(0);
+            }
+
+            50%,
+            90% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 1280px) {
+            .page-container,
+            .navbar-content,
+            .step-nav-inner {
+                max-width: 1100px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .page-container,
+            .navbar-content,
+            .step-nav-inner {
+            .page-container {
+                max-width: 960px;
+                padding: 40px 20px;
+            }
+            .cards-container {
+                gap: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-container,
+            .navbar-content,
+            .step-nav-inner {
+                max-width: 100%;
+                padding: 32px 16px;
+            }
+            .page-title h1 {
+                font-size: 24px;
+            }
+            .page-title p {
+                font-size: 14px;
+            }
+            .cards-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .card {
+                padding: 24px;
+            }
+
+            .feature-text-item {
+                font-size: 14px;
+                padding: 16px 10px;
+            }
+
+            .step-arrow {
+                display: none;
+            }
+
+            .step-nav-btns {
+                margin-left: 0;
+                margin-top: 8px;
+                width: 100%;
+            }
+
+            .btn-step {
+                width: 100%;
+                text-align: center;
+            }
+
+            .feature-text-item {
+                font-size: 14px;
+                padding: 16px 10px;
+            }
+
+            .highlight-background {
+                width: 50%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-container,
+            .navbar-content,
+            .step-nav-inner {
+                padding: 24px 12px;
+            }
+            .page-title h1 {
+                font-size: 20px;
+            }
+            .card {
+                padding: 20px 16px;
+            }
+            .card-icon {
+                width: 56px;
+                height: 56px;
+            }
+            .card-icon i {
+                font-size: 24px;
+            }
+        }
+    </style>
+    <!-- 引入字体图标 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+<nav class="navbar">
+    <div class="navbar-content">
+        <a href="/" class="navbar-brand"><div class="brand-icon">智</div>智能职业发展助手</a>
+        <a href="/" class="navbar-back">← 返回首页</a>
+    </div>
+</nav>
+<div class="step-nav"><div class="step-nav-inner">
+  <a href="job_scraper.html" class="step-link">1 岗位采集</a><span class="step-arrow">›</span>
+  <a href="resume_manage.html" class="step-link">2 简历管理</a><span class="step-arrow">›</span>
+  <a href="job_match.html" class="step-link">3 岗位匹配</a><span class="step-arrow">›</span>
+  <a href="resume_optimize.html" class="step-link">4 简历优化</a><span class="step-arrow">›</span>
+  <a href="auto_apply.html" class="step-link">5 自动投递</a><span class="step-arrow">›</span>
+  <a href="interview_coach.html" class="step-link active">6 模拟面试</a>
+  <div class="step-nav-btns"><a href="auto_apply.html" class="btn-step">‹ 上一步</a></div>
+:</div></div>
+    <div class="page-container">
+        <!-- 页面标题 -->
+        <div class="page-title">
+            <h1>文字面试训练中心</h1>
+            <p>AI 智能面试助手，助你轻松应对各类面试场景</p>
+            <!-- 图标容器 -->
+            <div class="header-icons" style="display: flex; justify-content: center; gap: 30px; margin-top: 20px;">
+                <div class="icon-item" style="text-align: center;">
+                    <i class="bi bi-clipboard-check" style="font-size: 32px; color: var(--primary);"></i>
+                    <p style="margin-top: 8px; color: var(--text-secondary);">面试准备</p>
+                </div>
+                <div class="icon-item" style="text-align: center;">
+                    <i class="bi bi-award" style="font-size: 32px; color: var(--primary);"></i>
+                    <p style="margin-top: 8px; color: var(--text-secondary);">offer 攻略</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 文字面试 + 真人模拟 功能卡片 -->
+        <div class="cards-container">
+            <!-- 文字面试卡片 -->
+            <div class="card">
+                <span class="card-emoji" style="top: 15px; right: 20px;">💬</span>
+                <span class="card-emoji" style="bottom: 80px; left: 20px;">🤖</span>
+                <div class="card-icon">
+                    <i class="bi bi-chat-square-text"></i>
+                </div>
+                <h2><span>💬</span>文字面试训练</h2>
+                <p>通过文字形式进行面试训练，适合初期准备和针对性问题练习，系统提供行业题库，AI 实时反馈优化建议，帮助你快速提升回答质量。</p>
+                <img src="https://picsum.photos/id/0/600/400" alt="文字面试界面展示" class="card-image">
+                <div class="tag-group">
+                    <span class="tag">随时练习</span>
+                    <span class="tag">针对性反馈</span>
+                    <span class="tag">无时间限制</span>
+                    <span class="tag">AI 智能分析</span>
+                </div>
+
+                <!-- 修改为 -->
+                <a href="/interview_first.html" target="_blank">开始文字面试练习 →</a>
+            </div>
+
+            <!-- 真人模拟面试卡片 -->
+            <div class="card">
+                <span class="card-emoji" style="top: 30px; right: 30px;">👔</span>
+                <span class="card-emoji" style="bottom: 120px; left: 30px;">🎥</span>
+                <div class="card-icon">
+                    <i class="bi bi-camera-video"></i>
+                </div>
+                <h2><span>🎥</span>真人模拟面试</h2>
+                <p>与专业面试官进行实时模拟面试，体验真实面试场景，获得详细评分报告和改进方案，快速提升临场能力和应变技巧，消除面试紧张感。</p>
+                <div class="tag-group">
+                    <span class="tag">真实体验</span>
+                    <span class="tag">专业指导</span>
+                    <span class="tag">实时反馈</span>
+                    <span class="tag">详细报告</span>
+                </div>
+                <a href="/interview_avatar.html" target="_blank">预约真人模拟面试 →</a>
+                <img src="https://picsum.photos/id/1/600/400" alt="真人模拟面试界面展示" class="card-image">
+                <div class="tag-group">
+                    <span class="tag">真实体验</span>
+                    <span class="tag">专业指导</span>
+                    <span class="tag">实时反馈</span>
+                    <span class="tag">详细报告</span>
+                </div>
+                <a href="/interview_avatar.html" target="_blank">预约真人模拟面试 →</a>
+            </div>
+        </div>
+
+        <!-- 动态高亮条 -->
+        <div class="highlight-container">
+            <div class="features-text">
+                <div class="feature-text-item">文字面试｜AI 智能分析，快速优化回答逻辑与表达 🚀</div>
+                <div class="feature-text-item">真人模拟｜1:1 还原真实场景，资深面试官精准指导 💯</div>
+            </div>
+            <div class="highlight-background"></div>
+        </div>
+    </div>
+</body>
+
+</html>

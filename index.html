@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>职业助手</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico"> <!-- 添加这一行 -->
+    <link rel="stylesheet" href="frontend/css/styles.css">
+    <!-- 引入 Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 使用本地副本作为备用 -->
+    <script src="frontend/js/libs/chart.js"></script>
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>职业发展助手</h1>
+            <p>助力您的职业成长</p>
+        </header>
+
+        <div class="features">
+            <div class="feature-card" id="resume-parser">
+                <div class="icon-container">
+                    📄
+                </div>
+                <h2>简历解析</h2>
+                <p>智能分析您的简历，提供优化建议</p>
+            </div>
+
+            <div class="feature-card" id="interview-coach">
+                <div class="icon-container">
+                    💬
+                </div>
+                <h2>面试辅导</h2>
+                <p>模拟面试场景，提升应对能力</p>
+            </div>
+
+            <div class="feature-card" id="job-recommender">
+                <div class="icon-container">
+                    💼
+                </div>
+                <h2>岗位推荐</h2>
+                <p>根据您的技能和经验推荐合适的职位</p>
+            </div>
+        </div>
+
+        <div id="feature-detail" class="hidden">
+            <button id="back-button"><i class="fas fa-arrow-left"></i> 返回</button>
+            <div id="resume-parser-content" class="hidden">
+                <h2>简历解析结果</h2>
+                <div class="upload-area">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <p id="upload-text">点击或拖拽文件到此处</p>
+                    <p id="file-name-display" style="margin-top: 10px; color: #3498db; font-weight: bold; display: none;"></p>
+                    <input type="file" id="resume-upload" accept=".pdf,.doc,.docx" />
+                </div>
+                <button id="analyze-btn" style="margin-top: 20px; display: block;">开始分析</button>
+                
+                <p class="note">支持 PDF, DOC, DOCX 格式</p>
+                <div id="analysis-results">
+                    <div class="score-display"></div>
+                    <div class="charts-container">
+                        <div class="profile-chart"></div>
+                        <div class="radar-chart"></div>
+                    </div>
+                    <div class="suggestions"></div>
+                </div>
+            </div>
+            <div id="detail-content"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 职业发展助手 - 助力您的职业成长</p>
+    </footer>
+
+    <script src="frontend/js/app.js"></script>
+</body>
+
+</html>

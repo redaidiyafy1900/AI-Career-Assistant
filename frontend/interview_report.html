@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>面试评分总结报告</title>
+    <link rel="stylesheet" href="/css/tailwind.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="/js/libs/chart.js"></script>
+    <style>
+        :root {
+            --primary-blue: #4a90e2;
+            --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .report-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .score-badge {
+            display: inline-block;
+            background: white;
+            color: var(--primary-blue);
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 15px 0;
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+        
+        .score-level {
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 15px;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--primary-blue);
+        }
+        
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .score-table th, .score-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .score-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .score-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .charts-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 30px 0;
+            gap: 30px;
+        }
+        
+        .score-chart {
+            flex: 1;
+            min-width: 350px;
+            height: 400px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        /* 为Chart.js的canvas元素设置最大高度 */
+        .score-chart canvas {
+            max-height: 300px;
+        }
+        
+        .score-chart:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .chart-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .text-content {
+            line-height: 1.8;
+            color: #495057;
+        }
+        
+        .text-content p {
+            margin-bottom: 15px;
+        }
+        
+        .highlight {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+        
+        .suggestion-card {
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary-blue);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .suggestion-card h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .suggestion-card ul {
+            padding-left: 20px;
+        }
+        
+        .suggestion-card li {
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .charts-container {
+                flex-direction: column;
+            }
+            
+            .score-chart {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="report-header">
+            <h1>面试评分总结报告</h1>
+            <div class="score-badge">81.5 分</div>
+            <div class="score-level">良好</div>
+        </div>
+
+        <!-- 量化评分部分 -->
+        <div class="section">
+            <div class="section-title">
+                <i class="fas fa-chart-pie"></i>
+                <span>一、量化评分</span>
+            </div>
+            
+            <div class="score-table-wrapper">
+                <table class="score-table">
+                    <thead>
+                        <tr>
+                            <th>评分维度</th>
+                            <th>权重</th>
+                            <th>得分</th>
+                            <th>加权得分</th>
+                            <th>评分依据</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>岗位适配度</td>
+                            <td>40%</td>
+                            <td>37/40</td>
+                            <td>14.8</td>
+                            <td>3年To C产品经验与岗位高度匹配，主导产品从0到1落地能力突出</td>
+                        </tr>
+                        <tr>
+                            <td>核心能力表现</td>
+                            <td>40%</td>
+                            <td>36/40</td>
+                            <td>14.4</td>
+                            <td>问题解决能力强，跨团队协作经验丰富，数据驱动意识强</td>
+                        </tr>
+                        <tr>
+                            <td>成长潜力</td>
+                            <td>20%</td>
+                            <td>17/20</td>
+                            <td>3.4</td>
+                            <td>具备主动发现问题并优化产品的意识，能通过测试验证方案</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 评分图表 -->
+            <div class="charts-container">
+                <div class="score-chart">
+                    <div class="chart-title">各维度得分分布</div>
+                    <canvas id="scoreChart"></canvas>
+                </div>
+                <div class="score-chart">
+                    <div class="chart-title">评分维度权重占比</div>
+                    <canvas id="weightChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 质性总结部分 -->
+        <div class="section">
+            <div class="section-title">
+                <i class="fas fa-file-alt"></i>
+                <span>二、质性总结</span>
+            </div>
+            
+            <h3 class="text-xl font-bold mb-4 highlight">优势提炼</h3>
+            <div class="text-content">
+                <p>你在产品经理岗位上的表现令人印象深刻。首先，你拥有扎实的To C产品经验，成功主导两款产品从0到1落地并取得显著成果，这展示了你全面的产品规划与执行能力。</p>
+                <p>其次，你在面对用户需求冲突时展现出的分层思维尤为出色，通过数据标签区分用户群体并针对性设计解决方案，不仅解决了高频用户与低频用户的需求矛盾，还实现了留存提升与投诉下降的双赢局面。</p>
+                <p>此外，你强大的数据驱动意识也值得肯定，无论是优化任务提醒逻辑还是推送策略，都能用具体数据支撑决策并验证效果，体现了专业严谨的工作方法。</p>
+            </div>
+            
+            <h3 class="text-xl font-bold mb-4 mt-8 highlight">待提升点</h3>
+            <div class="text-content">
+                <p>若要进一步提升专业能力，建议在以下方面继续深化：首先，在跨团队协作过程中，可以更详细地分享如何推动研发团队实现复杂产品逻辑的具体方法，包括如何应对技术挑战和资源限制。</p>
+                <p>其次，在用户反馈收集与分析方面，可以进一步系统化你的方法论，如建立更完善的用户反馈分类体系和优先级判断标准，使需求挖掘更加精准高效。</p>
+                <p>最后，在产品规划中，可以加强对长期产品战略的思考，将短期优化与长期愿景更好结合，提升产品的前瞻性。</p>
+            </div>
+        </div>
+
+        <!-- 对话统计部分 -->
+        <div id="conversation-stats" class="section">
+            <div class="section-title">
+                <i class="fas fa-comments-o"></i>
+                <span>三、对话统计</span>
+            </div>
+        </div>
+
+        <!-- 针对性建议部分 -->
+        <div class="section">
+            <div class="section-title">
+                <i class="fas fa-lightbulb"></i>
+                <span>四、针对性建议</span>
+            </div>
+            
+            <div class="suggestion-card">
+                <h4><i class="fas fa-briefcase mr-2"></i>求职建议</h4>
+                <p>在后续面试中，建议你更聚焦展示"用户分层策略在不同产品场景中的迁移应用"，通过具体案例说明你如何将这一方法论应用到不同类型的产品中，这进一步凸显你的经验复用价值。</p>
+            </div>
+            
+            <div class="suggestion-card">
+                <h4><i class="fas fa-ladder-alt mr-2"></i>职业成长建议</h4>
+                <p>从长期发展角度看，建议你持续深化以下能力：</p>
+                <ul>
+                    <li>加强数据建模与分析能力，学习更高级的用户分层方法和行为预测模型</li>
+                    <li>拓展产品战略思维，多关注行业趋势和竞品分析，培养从更高维度思考产品方向的能力</li>
+                    <li>加强团队管理与影响力建设，为未来承担更大责任做好准备</li>
+                </ul>
+            </div>
+            
+            <div class="text-content mt-4">
+                <p>总体而言，你是一位具备扎实产品功底、优秀数据思维和良好解决问题能力的产品经理，相信你能在合适的平台上继续成长并创造更大价值。</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 等待DOM加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM加载完成，开始处理面试报告数据');
+            
+            // 先清除所有静态内容
+            clearStaticContent();
+            
+            // 从localStorage获取面试结果数据
+            const interviewResult = getInterviewResult();
+            
+            console.log('获取到的面试结果数据:', interviewResult);
+            
+            // 如果没有数据，使用默认数据
+            const resultData = interviewResult || getDefaultInterviewResult();
+            
+            // 填充页面数据
+            populateReportData(resultData);
+            
+            // 初始化图表
+            initCharts(resultData);
+            
+            // 为图表添加鼠标悬浮放大效果
+            const charts = document.querySelectorAll('.score-chart');
+            charts.forEach(chart => {
+                chart.addEventListener('mouseover', function() {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.transition = 'transform 0.3s ease';
+                });
+                chart.addEventListener('mouseout', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+        
+        // 清除所有静态内容
+        function clearStaticContent() {
+            console.log('清除静态内容');
+            
+            // 清除评分相关静态内容
+            const scoreBadge = document.querySelector('.score-badge');
+            if (scoreBadge) scoreBadge.textContent = '';
+            
+            const scoreLevel = document.querySelector('.score-level');
+            if (scoreLevel) scoreLevel.textContent = '';
+            
+            // 清空评分表格内容
+            const scoreTableBody = document.querySelector('.score-table tbody');
+            if (scoreTableBody) scoreTableBody.innerHTML = '';
+            
+            // 清空质性总结内容
+            const textContents = document.querySelectorAll('.text-content');
+            textContents.forEach(content => {
+                content.innerHTML = '';
+            });
+            
+            // 清空建议卡片内容
+            const suggestionCards = document.querySelectorAll('.suggestion-card');
+            suggestionCards.forEach(card => {
+                const paragraphs = card.querySelectorAll('p');
+                paragraphs.forEach(p => p.textContent = '');
+                const lists = card.querySelectorAll('ul');
+                lists.forEach(ul => ul.innerHTML = '');
+            });
+        }
+        
+        // 从localStorage获取面试结果数据
+        function getInterviewResult() {
+            try {
+                const result = localStorage.getItem('interviewResult');
+                if (result) {
+                    return JSON.parse(result);
+                }
+            } catch (error) {
+                console.error('获取面试结果失败:', error);
+            }
+            return getDefaultInterviewResult();
+        }
+
+        // 获取默认面试结果数据（仅在没有实际数据时使用）
+        function getDefaultInterviewResult() {
+            // 这是默认的面试结果数据，仅在没有实际面试数据时使用
+            return {
+                overallScore: 50,
+                scoreLevel: '较差',
+                scoreDetails: [
+                    {
+                        dimension: '岗位适配度',
+                        weight: '40%',
+                        score: '20/40',
+                        weightedScore: 8.0,
+                        criteria: '尚未展示相关能力和经验'
+                    },
+                    {
+                        dimension: '核心能力表现',
+                        weight: '40%',
+                        score: '20/40',
+                        weightedScore: 8.0,
+                        criteria: '需要更积极地展示自己的能力'
+                    },
+                    {
+                        dimension: '成长潜力',
+                        weight: '20%',
+                        score: '10/20',
+                        weightedScore: 2.0,
+                        criteria: '需要更积极地展示学习和成长的意愿'
+                    }
+                ],
+                strengths: ['已完成基本面试流程'],
+                areasForImprovement: [
+                    '在面试中未能充分展示自己的能力和经验',
+                    '需要更积极地参与面试交流'
+                ],
+                suggestions: {
+                    jobSearch: '建议在后续面试中更加积极主动地展示自己，提供详细的工作经历和技能描述，让面试官能够全面了解您的能力。',
+                    careerGrowth: [
+                        '提升面试技巧和沟通能力',
+                        '面试前进行充分准备，了解目标岗位需求并准备相应的案例'
+                    ]
+                },
+                conversationStats: {
+                    userMessageCount: 0,
+                    totalUserMessageLength: 0,
+                    meaningfulResponses: 0
+                }
+            };
+        }
+
+        // 填充报告数据
+        function populateReportData(data) {
+            console.log('开始填充报告数据, data keys:', Object.keys(data));
+            console.log('strengths:', data.strengths);
+            console.log('areasForImprovement:', data.areasForImprovement);
+            console.log('suggestions:', data.suggestions);
+            
+            // 填充总体评分
+            const scoreBadge = document.querySelector('.score-badge');
+            if (scoreBadge) scoreBadge.textContent = data.overallScore + ' 分';
+            
+            const scoreLevel = document.querySelector('.score-level');
+            if (scoreLevel) scoreLevel.textContent = data.scoreLevel;
+            
+            // 填充评分详情表格
+            const scoreTableBody = document.querySelector('.score-table tbody');
+            if (scoreTableBody && data.scoreDetails) {
+                data.scoreDetails.forEach(detail => {
+                    const rowHTML = `
+                        <tr>
+                            <td>${detail.dimension}</td>
+                            <td>${detail.weight}</td>
+                            <td>${detail.score}</td>
+                            <td>${detail.weightedScore}</td>
+                            <td>${detail.criteria}</td>
+                        </tr>
+                    `;
+                    scoreTableBody.insertAdjacentHTML('beforeend', rowHTML);
+                });
+            }
+            
+            // 填充质性总结部分 - 优势提炼（通过查找包含"优势提炼"标题的section来定位）
+            const allSections = document.querySelectorAll('.section');
+            let strengthsContainer = null;
+            let improvementsContainer = null;
+            let suggestionSection = null;
+            
+            allSections.forEach(section => {
+                const headingText = section.textContent || '';
+                if (headingText.includes('优势提炼') || headingText.includes('质性总结')) {
+                    // 找到该section下的所有text-content
+                    const textContents = section.querySelectorAll('.text-content');
+                    if (textContents.length >= 1) strengthsContainer = textContents[0];
+                    if (textContents.length >= 2) improvementsContainer = textContents[1];
+                }
+                if (headingText.includes('求职建议') || headingText.includes('针对性建议')) {
+                    suggestionSection = section;
+                }
+            });
+            
+            console.log('strengthsContainer:', strengthsContainer);
+            console.log('improvementsContainer:', improvementsContainer);
+            console.log('suggestionSection:', suggestionSection);
+            
+            // 填充优势提炼
+            if (strengthsContainer && data.strengths && data.strengths.length > 0) {
+                strengthsContainer.innerHTML = '';
+                data.strengths.forEach(strength => {
+                    strengthsContainer.insertAdjacentHTML('beforeend', `<p>${strength}</p>`);
+                });
+                console.log('已填充优势, 数量:', data.strengths.length);
+            }
+            
+            // 填充待提升点
+            if (improvementsContainer && data.areasForImprovement && data.areasForImprovement.length > 0) {
+                improvementsContainer.innerHTML = '';
+                data.areasForImprovement.forEach(area => {
+                    improvementsContainer.insertAdjacentHTML('beforeend', `<p>${area}</p>`);
+                });
+                console.log('已填充待提升点, 数量:', data.areasForImprovement.length);
+            }
+            
+            // 添加对话统计数据展示
+            const statsContainer = document.getElementById('conversation-stats');
+            if (statsContainer && data.conversationStats) {
+                statsContainer.innerHTML = `
+                    <div class="section-title">
+                        <i class="fas fa-comments-o"></i>
+                        <span>三、对话统计</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-gray-50 p-6 rounded-lg text-center">
+                            <p class="text-sm text-gray-500 mb-2">回复总数</p>
+                            <p class="text-3xl font-bold text-primary">${data.conversationStats.userMessageCount}</p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-lg text-center">
+                            <p class="text-sm text-gray-500 mb-2">总字数</p>
+                            <p class="text-3xl font-bold text-primary">${data.conversationStats.totalUserMessageLength}</p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-lg text-center">
+                            <p class="text-sm text-gray-500 mb-2">有效回复</p>
+                            <p class="text-3xl font-bold text-primary">${data.conversationStats.meaningfulResponses}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // 填充建议部分 - 通过suggestionSection定位，不再依赖nth-child
+            if (suggestionSection) {
+                const cards = suggestionSection.querySelectorAll('.suggestion-card');
+                
+                // 第一个卡片 = 求职建议（找里面的p标签）
+                if (cards.length >= 1 && data.suggestions && data.suggestions.jobSearch) {
+                    const jobP = cards[0].querySelector('p');
+                    if (jobP) {
+                        jobP.textContent = data.suggestions.jobSearch;
+                        console.log('已填充求职建议');
+                    }
+                }
+                
+                // 第二个卡片 = 职业成长建议（找里面的ul标签）
+                if (cards.length >= 2 && data.suggestions && data.suggestions.careerGrowth) {
+                    const careerUl = cards[1].querySelector('ul');
+                    if (careerUl) {
+                        careerUl.innerHTML = '';
+                        data.suggestions.careerGrowth.forEach(item => {
+                            careerUl.insertAdjacentHTML('beforeend', `<li>${item}</li>`);
+                        });
+                        console.log('已填充职业成长建议, 数量:', data.suggestions.careerGrowth.length);
+                    }
+                }
+            }
+            
+            console.log('报告数据填充完成');
+        }
+        
+        // 初始化图表
+        function initCharts(data) {
+            console.log('开始初始化图表');
+            
+            // 评分图表 - 柱状图
+            const scoreCtx = document.getElementById('scoreChart');
+            if (scoreCtx && data.scoreDetails) {
+                // 从数据中提取得分（去掉分母）
+                const scores = data.scoreDetails.map(detail => {
+                    const scorePart = detail.score.split('/')[0];
+                    return parseInt(scorePart, 10);
+                });
+                
+                const labels = data.scoreDetails.map(detail => detail.dimension);
+                
+                new Chart(scoreCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '得分',
+                            data: scores,
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(75, 192, 192, 0.7)',
+                                'rgba(153, 102, 255, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 40,
+                                title: {
+                                    display: true,
+                                    text: '得分 (满分40/20/20)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: '评分维度'
+                                }
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 权重图表 - 饼图
+            const weightCtx = document.getElementById('weightChart');
+            if (weightCtx && data.scoreDetails) {
+                // 从数据中提取权重（去掉百分号）
+                const weights = data.scoreDetails.map(detail => {
+                    const weightPart = detail.weight.replace('%', '');
+                    return parseInt(weightPart, 10);
+                });
+                
+                const weightLabels = data.scoreDetails.map(detail => `${detail.dimension} (${detail.weight})`);
+                
+                new Chart(weightCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: weightLabels,
+                        datasets: [{
+                            data: weights,
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(75, 192, 192, 0.7)',
+                                'rgba(153, 102, 255, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right'
+                            }
+                        }
+                    }
+                });
+            }
+            
+            console.log('图表初始化完成');
+        }
+    </script>
+</body>
+
+</html>

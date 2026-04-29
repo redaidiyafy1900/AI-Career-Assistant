@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文字面试辅导</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#36B37E',
+                        secondary: '#E6F7F0',
+                        neutral: '#F7FAFC',
+                        dark: '#253858',
+                        light: '#F9FBFD'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto { content-visibility: auto; }
+            .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+            .scrollbar-hide::-webkit-scrollbar { display: none; }
+            .chat-bubble-left { border-radius: 18px 18px 18px 0; }
+            .chat-bubble-right { border-radius: 18px 18px 0 18px; }
+            .typing-indicator { display: flex; align-items: center; gap: 3px; height: 24px; }
+            .typing-indicator span {
+                width: 8px; height: 8px; background-color: #666;
+                border-radius: 50%; display: inline-block;
+                animation: typing 1.4s infinite ease-in-out both;
+            }
+            .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+            .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+            @keyframes typing {
+                0% { transform: translateY(0px); }
+                28% { transform: translateY(-5px); }
+                44% { transform: translateY(0px); }
+            }
+        }
+        @keyframes typing-bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+        .animate-bounce { animation: typing-bounce 1.4s infinite ease-in-out; }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-dark h-screen flex flex-col">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <a href="/" class="text-gray-500 hover:text-primary transition-colors text-sm">
+                    <i class="fa fa-arrow-left mr-1"></i> 首页
+                </a>
+                <h1 class="text-xl font-semibold text-dark">文字面试辅导</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="/settings.html" class="text-gray-600 hover:text-primary transition-colors" title="设置">
+                    <i class="fa fa-cog text-lg"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="flex-1 flex overflow-hidden">
+        <!-- 左侧边栏 -->
+        <aside class="w-64 bg-white border-r border-gray-200 flex-shrink-0 hidden md:flex flex-col">
+            <div class="p-3 border-b border-gray-200">
+                <h2 class="font-medium text-gray-700 mb-2">面试会话</h2>
+                <button onclick="startNewInterview()"
+                    class="w-full bg-primary text-white text-sm py-2 px-3 rounded-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-1">
+                    <i class="fa fa-plus"></i> 新建面试
+                </button>
+            </div>
+            <!-- 当前会话 -->
+            <div class="p-3 bg-primary/10 border-l-4 border-primary">
+                <div class="flex justify-between items-start">
+                    <div class="font-medium text-sm" id="current-session-title">当前面试</div>
+                    <span id="session-status-badge" class="text-xs bg-primary text-white px-2 py-0.5 rounded-full">进行中</span>
+                </div>
+                <p class="text-xs text-gray-500 mt-1" id="current-session-time"></p>
+            </div>
+            <!-- 历史记录 -->
+            <div class="px-3 py-2 text-xs text-gray-400 font-medium uppercase tracking-wide border-b border-gray-100">历史记录</div>
+            <div class="overflow-y-auto flex-1 scrollbar-hide" id="history-sidebar">
+                <div class="p-4 text-sm text-gray-400 text-center">加载中...</div>
+            </div>
+        </aside>
+
+        <!-- 聊天区域 -->
+        <section class="flex-1 flex flex-col overflow-hidden">
+            <!-- 面试信息栏 -->
+            <div class="bg-secondary py-3 px-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="font-semibold" id="interview-title">AI 模拟面试</h2>
+                        <p class="text-sm text-gray-600">AI面试官将对你进行专业评估</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 聊天消息区域 -->
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-hide bg-gray-50">
+                <div class="flex justify-center">
+                    <span class="bg-gray-200 text-gray-600 text-xs px-3 py-1 rounded-full">今天 <span id="system-message-time"></span></span>
+                </div>
+                <div class="max-w-[80%]">
+                    <div class="bg-white p-4 rounded-lg shadow-sm chat-bubble-left">
+                        <p>您好！欢迎参加今天的成长导向型面试，我是您的AI面试官。在接下来的对话中，我会：
+                            1️⃣ 了解您的专业背景
+                            2️⃣ 探讨技术问题解决方案
+                            3️⃣ 模拟实际工作场景
+                            🔹 这不是一场考试，而是双向交流的机会。如果遇到需要思考的问题，随时可以说「请给我片刻思考时间」。
+                            现在，请您用 2-3分钟 介绍一下自己，重点放在与目标岗位最相关的项目经验和您最自豪的技术成就。
+                            （当您准备好时可以直接开始）</p>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1" id="ai-message-time"></p>
+                </div>
+            </div>
+
+            <!-- 底部输入区域 -->
+            <div class="border-t border-gray-200 p-4 bg-white">
+                <div class="flex items-end space-x-3">
+                    <div class="flex-1">
+                        <textarea id="message-input" rows="3" placeholder="请输入你的回答..."
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all resize-none"></textarea>
+                    </div>
+                    <button id="send-button"
+                        class="bg-primary hover:bg-primary/90 text-white rounded-lg p-3 transition-colors flex-shrink-0">
+                        <i class="fa fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="flex justify-between mt-2 text-sm">
+                    <div class="text-gray-500 text-xs">Enter 发送 · Shift+Enter 换行</div>
+                    <div class="text-gray-500"><span id="char-count">0</span>/500</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 历史详情弹窗 -->
+    <div id="history-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center" onclick="closeHistoryModal()">
+        <div class="bg-white rounded-xl p-6 max-w-lg w-[90%] max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-dark" id="history-modal-title">面试记录</h3>
+                <button onclick="closeHistoryModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fa fa-times text-lg"></i>
+                </button>
+            </div>
+            <div id="history-modal-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // ====== 会话状态 ======
+        let sessionId;
+        let interviewStartedAt = new Date().toISOString();
+        let interviewTopic = '模拟面试';
+
+        // 初始化 sessionId
+        try {
+            sessionId = localStorage.getItem('interviewSessionId');
+            if (!sessionId) {
+                sessionId = 'interview_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+                localStorage.setItem('interviewSessionId', sessionId);
+            }
+        } catch (e) {
+            sessionId = 'interview_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+        }
+
+        let conversationHistory = [
+            {
+                role: "system",
+                content: "你是一个专业的面试官，正在进行一场模拟面试。请根据用户的回答提出相关问题，评估用户的技能和经验。"
+            }
+        ];
+
+        // 显示当前时间
+        document.getElementById('system-message-time').textContent = getCurrentTime();
+        document.getElementById('ai-message-time').textContent = getCurrentTime();
+        document.getElementById('current-session-time').textContent = new Date().toLocaleString('zh-CN', {hour:'2-digit', minute:'2-digit'});
+
+        // ====== 工具函数 ======
+        function getCurrentTime() {
+            const now = new Date();
+            return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+        }
+
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            hideTypingIndicator();
+            document.getElementById('chat-messages').insertAdjacentHTML('beforeend', `
+                <div id="typing-indicator" class="flex items-start space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-white flex-shrink-0">
+                        <i class="fa fa-robot text-blue-600 text-lg"></i>
+                    </div>
+                    <div class="max-w-[80%]">
+                        <div class="bg-white p-4 rounded-lg shadow-sm chat-bubble-left flex items-center space-x-2 animate-pulse">
+                            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.1s]"></div>
+                            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                            <span class="text-gray-500 ml-2">AI面试官正在输入中...</span>
+                        </div>
+                    </div>
+                </div>
+            `);
+            scrollToBottom();
+        }
+
+        function hideTypingIndicator() {
+            const el = document.getElementById('typing-indicator');
+            if (el) el.remove();
+        }
+
+        // 字符计数
+        const textarea = document.getElementById('message-input');
+        const charCount = document.getElementById('char-count');
+        textarea.addEventListener('input', function () {
+            const count = this.value.length;
+            if (count > 500) {
+                this.value = this.value.substring(0, 500);
+                charCount.textContent = 500;
+                charCount.classList.add('text-red-500');
+            } else {
+                charCount.textContent = count;
+                charCount.classList.remove('text-red-500');
+            }
+        });
+
+        // ====== 重新发送消息 ======
+        function resendMessage(originalMessage) {
+            // 移除最后一条用户消息和错误消息
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.lastChild.remove(); // 移除错误消息
+            chatMessages.lastChild.remove(); // 移除用户消息
+
+            // 从历史记录中移除最后一条用户消息
+            conversationHistory.pop();
+
+            // 重新设置输入框并发送
+            const textarea = document.getElementById('user-message');
+            textarea.value = originalMessage;
+
+            // 触发发送
+            setTimeout(() => {
+                const event = new Event('click');
+                document.querySelector('#send-btn').dispatchEvent(event);
+            }, 100);
+        }
+
+        // ====== 发送消息 ======
+        async function sendMessage() {
+            const message = textarea.value.trim();
+            if (!message) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+
+            // 更新 topic（取第一条用户消息）
+            if (interviewTopic === '模拟面试') {
+                interviewTopic = message.length > 20 ? message.substring(0, 20) + '...' : message;
+                document.getElementById('interview-title').textContent = 'AI 模拟面试 - ' + interviewTopic;
+            }
+
+            // 添加用户消息到 UI
+            chatMessages.insertAdjacentHTML('beforeend', `
+                <div class="flex items-start justify-end space-x-3">
+                    <div class="max-w-[80%]">
+                        <div class="bg-primary text-white p-4 rounded-lg shadow-sm chat-bubble-right">
+                            <p>${escapeHtml(message)}</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1 text-right">${getCurrentTime()}</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        <i class="fa fa-user text-gray-500"></i>
+                    </div>
+                </div>
+            `);
+
+            conversationHistory.push({ role: "user", content: message });
+            textarea.value = '';
+            charCount.textContent = '0';
+            scrollToBottom();
+            showTypingIndicator();
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 300000); // 5分钟超时
+
+                // 发送到后端（过滤掉 system 消息，服务端会自己加）
+                const messagesForAPI = conversationHistory.filter(m => m.role !== 'system');
+                const response = await fetch('/api/interview-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: messagesForAPI, sessionId }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                const data = await response.json();
+                if (!response.ok || !data.success) {
+                    throw new Error(data.error || data.message || `请求失败 (${response.status})`);
+                }
+
+                const aiResponse = data.message || '';
+                if (data.sessionId) sessionId = data.sessionId;
+
+                // 检测是否为降级响应（AI服务超时）
+                if (data.fallback) {
+                    console.warn('[面试] AI服务响应超时，使用预设问题');
+                    showToast('⚠️ AI服务响应较慢，已切换至预设面试问题', 'warning');
+                }
+
+                hideTypingIndicator();
+                conversationHistory.push({ role: "assistant", content: aiResponse });
+
+                // 简化的解析逻辑
+                let currentQuestion = '';
+                let answerBriefEvaluation = '';
+                let isPlainText = true;  // 假设是纯文本
+
+                console.log('[原始响应]', aiResponse.substring(0, 200) + '...');
+
+                // 检查是否是纯文本（不包含JSON标记）
+                if (!aiResponse.includes('{') || !aiResponse.includes('"')) {
+                    console.log('[判断] 响应是纯文本格式');
+                    // 按换行符分割
+                    const parts = aiResponse.split('\n\n');
+                    if (parts.length >= 2) {
+                        answerBriefEvaluation = parts[0].trim();
+                        currentQuestion = parts[1].trim();
+                        console.log('[提取成功] 纯文本分割');
+                        console.log('  answer_brief_evaluation:', answerBriefEvaluation.substring(0, 50) + '...');
+                        console.log('  current_question:', currentQuestion.substring(0, 50) + '...');
+                    } else if (parts.length === 1) {
+                        currentQuestion = parts[0].trim();
+                        console.log('[提取成功] 只有问题');
+                        console.log('  current_question:', currentQuestion.substring(0, 50) + '...');
+                    }
+                } else {
+                    console.log('[判断] 响应包含JSON，尝试解析');
+                    isPlainText = false;
+
+                    // 尝试解析JSON
+                    try {
+                        let cleaned = aiResponse.trim();
+                        if (cleaned.startsWith('```json')) cleaned = cleaned.substring(7);
+                        if (cleaned.startsWith('```')) cleaned = cleaned.substring(3);
+                        if (cleaned.endsWith('```')) cleaned = cleaned.substring(0, cleaned.length - 3);
+                        cleaned = cleaned.trim();
+
+                        if (cleaned.startsWith('{')) {
+                            const obj = JSON.parse(cleaned);
+                            currentQuestion = obj.current_question || '';
+                            answerBriefEvaluation = obj.answer_brief_evaluation || '';
+                            console.log('[提取成功] JSON解析');
+                        }
+                    } catch (e) {
+                        console.log('[JSON解析失败]', e.message);
+                        // JSON解析失败，尝试提取所有文本
+                        const textMatches = aiResponse.match(/"([^"]*(?:\\.[^"]*)*)"/g);
+                        if (textMatches && textMatches.length > 1) {
+                            currentQuestion = textMatches[textMatches.length - 1].replace(/\\"/g, '"');
+                            if (textMatches.length > 2) {
+                                answerBriefEvaluation = textMatches[textMatches.length - 2].replace(/\\"/g, '"');
+                            }
+                            console.log('[提取成功] 正则提取');
+                        }
+                    }
+                }
+
+                console.log('[最终结果]', {
+                    currentQuestion: currentQuestion ? currentQuestion.substring(0, 50) + '...' : '(空)',
+                    answerBriefEvaluation: answerBriefEvaluation ? answerBriefEvaluation.substring(0, 50) + '...' : '(空)',
+                    isPlainText
+                });
+
+                if (answerBriefEvaluation) {
+                    chatMessages.insertAdjacentHTML('beforeend', `
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0">
+                                <i class="fa fa-robot"></i>
+                            </div>
+                            <div class="max-w-[80%]">
+                                <div class="bg-white p-4 rounded-lg shadow-sm chat-bubble-left">
+                                    <p>${escapeHtml(answerBriefEvaluation)}</p>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">${getCurrentTime()}</p>
+                            </div>
+                        </div>
+                    `);
+                    scrollToBottom();
+                }
+
+                setTimeout(() => {
+                    if (currentQuestion) {
+                        // 解析成功，只显示纯文本内容
+                        chatMessages.insertAdjacentHTML('beforeend', `
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0">
+                                    <i class="fa fa-robot"></i>
+                                </div>
+                                <div class="max-w-[80%]">
+                                    <div class="bg-white p-4 rounded-lg shadow-sm chat-bubble-left">
+                                        <p>${escapeHtml(currentQuestion)}</p>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">${getCurrentTime()}</p>
+                                </div>
+                            </div>
+                        `);
+                        scrollToBottom();
+                    } else if (!parsedSuccess) {
+                        // 解析失败，尝试提取纯文本内容
+                        console.log('[最终回退] 尝试从JSON中提取纯文本');
+
+                        // 尝试提取所有引号内的文本内容
+                        const allTextParts = [];
+                        const textMatches = aiResponse.match(/"([^"]*(?:\\.[^"]*)*)"/g);
+                        if (textMatches) {
+                            textMatches.forEach((match, index) => {
+                                if (index > 0) { // 跳过第一个（可能是字段名）
+                                    const text = match.replace(/\\"/g, '"').replace(/\\n/g, '\n');
+                                    if (text.length > 10) { // 只保留有意义的文本
+                                        allTextParts.push(text);
+                                    }
+                                }
+                            });
+                        }
+
+                        let displayContent = '';
+                        if (allTextParts.length > 0) {
+                            displayContent = allTextParts.join('\n\n');
+                            console.log('[提取成功] 提取到纯文本内容:', displayContent.substring(0, 100) + '...');
+                        }
+
+                        chatMessages.insertAdjacentHTML('beforeend', `
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center text-white flex-shrink-0">
+                                    <i class="fa fa-info-circle"></i>
+                                </div>
+                                <div class="max-w-[80%]">
+                                    <div class="bg-yellow-50 p-4 rounded-lg shadow-sm chat-bubble-left">
+                                        <p style="color: #854d0e;">⚠️ AI返回格式已自动处理</p>
+                                        ${displayContent ? `
+                                            <p style="margin-top: 12px;">${escapeHtml(displayContent)}</p>
+                                        ` : `
+                                            <details style="margin-top: 12px;">
+                                                <summary style="cursor: pointer; color: #1e40af;">点击查看原始响应</summary>
+                                                <pre style="background: #fef3c7; padding: 8px; border-radius: 4px; overflow-x: auto; font-size: 12px; margin-top: 8px; white-space: pre-wrap;">${escapeHtml(aiResponse)}</pre>
+                                            </details>
+                                        `}
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">${getCurrentTime()}</p>
+                                </div>
+                            </div>
+                        `);
+                        scrollToBottom();
+                    }
+                    addEndInterviewButton();
+                }, 1000);
+
+            } catch (error) {
+                hideTypingIndicator();
+                let errorMessage = escapeHtml(error.message);
+                let errorType = 'error';
+
+                // 改进错误提示
+                if (error.name === 'AbortError') {
+                    errorMessage = '请求超时（3分钟），AI服务响应时间过长。请尝试：\n1. 检查网络连接\n2. 简化问题内容\n3. 稍后重试';
+                    errorType = 'timeout';
+                } else if (error.message.includes('signal is aborted') || error.message.includes('aborted without reason')) {
+                    errorMessage = '请求被中断。可能原因：\n1. 页面刷新或导航\n2. 网络连接不稳定\n3. 浏览器标签页关闭\n请检查网络后重新发送消息';
+                    errorType = 'aborted';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMessage = '网络请求失败。请检查：\n1. 服务器是否运行（端口3002）\n2. 网络连接是否正常\n3. 防火墙设置';
+                    errorType = 'network';
+                }
+
+                document.getElementById('chat-messages').insertAdjacentHTML('beforeend', `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white flex-shrink-0">
+                            <i class="fa fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="max-w-[80%]">
+                            <div class="bg-red-100 p-4 rounded-lg shadow-sm chat-bubble-left">
+                                <p style="white-space: pre-line;">${errorMessage}</p>
+                                <button onclick="resendMessage('${escapeHtml(message)}')" class="mt-2 text-sm text-blue-600 hover:text-blue-800 underline">
+                                    🔄 重新发送此消息
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">${getCurrentTime()}</p>
+                        </div>
+                    </div>
+                `);
+                scrollToBottom();
+            }
+        }
+
+        // ====== 结束面试 ======
+        function addEndInterviewButton() {
+            removeEndInterviewButton();
+            document.getElementById('chat-messages').insertAdjacentHTML('beforeend', `
+                <div id="end-interview-button-container" class="flex justify-center my-4">
+                    <button id="end-interview-button"
+                        class="bg-white text-primary border border-primary px-4 py-2 rounded-md text-sm hover:bg-primary/5 transition-colors flex items-center">
+                        <i class="fa fa-sign-out mr-2"></i> 结束面试
+                    </button>
+                </div>
+            `);
+            scrollToBottom();
+            document.getElementById('end-interview-button').addEventListener('click', handleEndInterviewClick);
+        }
+
+        function removeEndInterviewButton() {
+            const el = document.getElementById('end-interview-button-container');
+            if (el) el.remove();
+        }
+
+        async function handleEndInterviewClick() {
+            removeEndInterviewButton();
+            showWaitingStatus();
+            try {
+                await sendEndInterviewMessage();
+                handleEndInterview(false);
+            } catch (error) {
+                showErrorMessage('发送结束面试请求失败：' + error.message);
+                setTimeout(() => addEndInterviewButton(), 2000);
+            }
+        }
+
+        async function sendEndInterviewMessage() {
+            const chatMessages = document.getElementById('chat-messages');
+            // 显示用户发送的"结束面试"消息
+            chatMessages.insertAdjacentHTML('beforeend', `
+                <div class="flex items-start justify-end space-x-3">
+                    <div class="max-w-[80%]">
+                        <div class="bg-primary text-white p-4 rounded-lg shadow-sm chat-bubble-right">
+                            <p>结束面试</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1 text-right">${getCurrentTime()}</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0">
+                        <i class="fa fa-user text-gray-500"></i>
+                    </div>
+                </div>
+            `);
+            conversationHistory.push({ role: "user", content: "结束面试" });
+            scrollToBottom();
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 300000); // 5分钟超时
+            const messagesForAPI = conversationHistory.filter(m => m.role !== 'system');
+            
+            try {
+                const response = await fetch('/api/interview-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: messagesForAPI, sessionId }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                const data = await response.json();
+                if (!response.ok || !data.success) {
+                    throw new Error(data.error || `请求失败 (${response.status})`);
+                }
+                if (data.sessionId) sessionId = data.sessionId;
+
+                // 不再在对话框中显示AI返回的内容（可能是原始JSON）
+                // 只保存到对话历史用于生成报告
+                const aiEndResponse = data.message || '';
+                conversationHistory.push({ role: "assistant", content: aiEndResponse });
+                
+                console.log('[面试] 结束响应已接收，等待生成报告...');
+            } catch (error) {
+                clearTimeout(timeoutId);
+                // 即使获取结束响应失败，也继续生成报告（使用已有对话记录）
+                console.warn('[面试] 获取结束响应失败，继续使用已有对话:', error.message);
+            }
+        }
+
+        async function handleEndInterview(isAutoEnd = false) {
+            // 先显示等待状态
+            document.getElementById('session-status-badge').textContent = '已结束';
+            document.getElementById('session-status-badge').classList.remove('bg-primary');
+            document.getElementById('session-status-badge').classList.add('bg-gray-400');
+
+            const chatMessages = document.getElementById('chat-messages');
+            
+            // 显示等待状态，不输出任何JSON内容
+            const waitingDiv = `
+                <div id="report-waiting" class="flex justify-center my-4">
+                    <div class="max-w-[80%] text-center bg-white p-6 rounded-lg shadow-sm border border-blue-200">
+                        <div class="flex items-center justify-center mb-3">
+                            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-2"></div>
+                            <span class="text-blue-700 font-medium">AI 正在分析您的面试表现...</span>
+                        </div>
+                        <p class="text-gray-500 text-sm">正在生成详细评估报告</p>
+                    </div>
+                </div>
+            `;
+            chatMessages.insertAdjacentHTML('beforeend', waitingDiv);
+            scrollToBottom();
+
+            // 调用后端API获取详细报告
+            let interviewResult;
+            try {
+                console.log('[报告] 开始请求面试报告API...');
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 300000); // 5分钟超时
+
+                const response = await fetch('/api/interview/report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sessionId: sessionId,
+                        messages: conversationHistory,
+                        type: 'text'
+                    }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                const data = await response.json();
+                console.log('[报告] API返回原始数据:', data);
+
+                if (data.success && data.report) {
+                    // 转换API返回的数据格式为前端需要的格式
+                    interviewResult = convertApiReportToFrontend(data.report);
+                    console.log('[报告] 转换后的报告数据:', JSON.stringify(interviewResult, null, 2));
+                    
+                    // 验证关键字段是否填充完整
+                    if (!interviewResult.scoreDetails || !interviewResult.strengths || !interviewResult.areasForImprovement) {
+                        console.warn('[报告] 报告字段可能不完整！');
+                    }
+                    
+                    // 验证总分是否合理（30分以下可能是默认值）
+                    if (interviewResult.overallScore && interviewResult.overallScore > 0 && 
+                        data.report.overall_score === undefined) {
+                        console.warn('[报告] 可能使用了默认/降级报告，分数:', interviewResult.overallScore);
+                    }
+                } else {
+                    console.warn('[报告] API返回失败或无报告数据，尝试从对话历史提取...');
+                    
+                    // 尝试从对话历史的最后一条AI消息中查找报告数据
+                    const lastAiMessage = [...conversationHistory].reverse().find(m => m.role === 'assistant' && m.content);
+                    let reportFromHistory = null;
+                    if (lastAiMessage && lastAiMessage.content) {
+                        try {
+                            const jsonMatch = lastAiMessage.content.match(/\{[\s\S]*"overall_score"[\s\S]*\}/);
+                            if (jsonMatch) {
+                                reportFromHistory = JSON.parse(jsonMatch[0]);
+                                console.log('[报告] 从对话历史中找到报告数据');
+                                interviewResult = convertApiReportToFrontend(reportFromHistory);
+                            }
+                        } catch (e) {
+                            console.warn('[报告] 从对话历史解析失败:', e);
+                        }
+                    }
+                    
+                    if (!interviewResult) {
+                        interviewResult = generateInterviewResultFromConversation();
+                    }
+                }
+            } catch (e) {
+                console.error('[报告] 获取报告失败:', e);
+                
+                // 尝试从对话历史中获取报告
+                const lastAiMessage = [...conversationHistory].reverse().find(m => m.role === 'assistant' && m.content);
+                if (lastAiMessage && lastAiMessage.content) {
+                    try {
+                        const jsonMatch = lastAiMessage.content.match(/\{[\s\S]*"overall_score"[\s\S]*\}/);
+                        if (jsonMatch) {
+                            const reportFromHistory = JSON.parse(jsonMatch[0]);
+                            console.log('[报告] 从对话历史中找到报告数据（备用）');
+                            interviewResult = convertApiReportToFrontend(reportFromHistory);
+                        }
+                    } catch (e2) {
+                        console.error('[报告] 备用方案也失败:', e2);
+                    }
+                }
+                
+                if (!interviewResult) {
+                    interviewResult = generateInterviewResultFromConversation();
+                }
+            }
+
+            const endedAt = new Date().toISOString();
+            const durationSec = Math.round((new Date(endedAt) - new Date(interviewStartedAt)) / 1000);
+
+            // 保存到后端数据库
+            try {
+                await fetch('/api/interview/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        session_id: sessionId,
+                        mode: 'text',
+                        topic: interviewTopic,
+                        started_at: interviewStartedAt,
+                        ended_at: endedAt,
+                        duration_sec: durationSec,
+                        messages: JSON.stringify(conversationHistory),
+                        score: Math.round(interviewResult.overallScore),
+                        feedback_json: JSON.stringify(interviewResult)
+                    })
+                });
+                loadHistory();
+            } catch (e) {
+                console.error('保存面试记录失败:', e);
+            }
+
+            // 保存到 localStorage 供报告页读取
+            try {
+                localStorage.setItem('interviewResult', JSON.stringify(interviewResult));
+                console.log('[报告] 已保存到localStorage，大小:', JSON.stringify(interviewResult).length, '字节');
+                localStorage.removeItem('interviewSessionId');
+            } catch (e) {
+                console.error('[报告] 保存到localStorage失败:', e);
+            }
+
+            // 更新等待状态为成功（只显示简短信息）
+            const waitingEl = document.getElementById('report-waiting');
+            if (waitingEl) {
+                waitingEl.innerHTML = `
+                    <div class="max-w-[80%] text-center bg-white p-6 rounded-lg shadow-sm border border-green-300">
+                        <div class="flex items-center justify-center mb-2">
+                            <i class="fas fa-check-circle text-green-500 text-xl mr-2"></i>
+                            <span class="text-green-700 font-bold">面试报告生成完成！</span>
+                        </div>
+                        <p class="text-gray-500 text-sm">正在跳转至报告页面...</p>
+                    </div>
+                `;
+            }
+            scrollToBottom();
+
+            // 1.5秒后跳转
+            setTimeout(() => { window.location.href = '/interview_report.html'; }, 1500);
+        }
+
+        // 将API返回的报告数据转换为前端需要的格式
+        function convertApiReportToFrontend(report) {
+            // 如果是原始 Markdown 格式，需要解析
+            if (report && report.is_raw_markdown) {
+                return parseMarkdownReport(report.raw_markdown, report.conversation_stats);
+            }
+            
+            // 新的统一JSON格式转换
+            if (report && (report.overall_score !== undefined || report.quantitative_assessment !== undefined)) {
+                return {
+                    overallScore: report.overall_score || 50,
+                    scoreLevel: report.score_level || '一般',
+                    scoreDetails: (report.quantitative_assessment || report.score_details || []).map(d => ({
+                        dimension: d.dimension || '',
+                        weight: d.weight || '0%',
+                        score: d.score || '0/0',
+                        weightedScore: d.weighted_score || 0,
+                        criteria: d.rationale || d.criteria || ''
+                    })),
+                    strengths: (report.qualitative_summary && report.qualitative_summary.strengths) || report.strengths || [],
+                    areasForImprovement: (report.qualitative_summary && report.qualitative_summary.areas_for_improvement) || report.areas_for_improvement || [],
+                    suggestions: {
+                        jobSearch: (report.targeted_suggestions && report.targeted_suggestions.job_search) || (report.suggestions && report.suggestions.job_search) || '',
+                        careerGrowth: (report.targeted_suggestions && report.targeted_suggestions.career_growth) || (report.suggestions && report.suggestions.career_growth) || []
+                    },
+                    conversationStats: {
+                        userMessageCount: (report.conversation_stats && report.conversation_stats.user_message_count) || 0,
+                        totalUserMessageLength: (report.conversation_stats && report.conversation_stats.total_user_message_length) || 0,
+                        meaningfulResponses: (report.conversation_stats && report.conversation_stats.meaningful_responses) || 0
+                    }
+                };
+            }
+            
+            // 如果报告数据不完整，生成默认报告
+            console.warn('[报告转换] 报告数据不完整，使用默认格式');
+            return {
+                overallScore: 60,
+                scoreLevel: '一般',
+                scoreDetails: [
+                    { dimension: '岗位适配度', weight: '40%', score: '24/40', weightedScore: 24, criteria: '根据面试表现评估' },
+                    { dimension: '核心能力表现', weight: '40%', score: '24/40', weightedScore: 24, criteria: '根据面试表现评估' },
+                    { dimension: '成长潜力', weight: '20%', score: '12/20', weightedScore: 12, criteria: '根据面试表现评估' }
+                ],
+                strengths: ['完成了面试流程'],
+                areasForImprovement: ['建议提供更详细的回答'],
+                suggestions: {
+                    jobSearch: '继续提升专业技能，积累更多项目经验。',
+                    careerGrowth: ['提升面试技巧', '积累更多实际项目经验', '培养沟通协作能力']
+                },
+                conversationStats: report && report.conversation_stats ? report.conversation_stats : {
+                    userMessageCount: 0,
+                    totalUserMessageLength: 0,
+                    meaningfulResponses: 0
+                }
+            };
+        }
+        
+        // 解析 Markdown 格式的报告
+        function parseMarkdownReport(markdown, conversationStats) {
+            // 先尝试从 Markdown 中提取 JSON 数据
+            const jsonMatch = markdown.match(/\{[\s\S]*?"overall_score"[\s\S]*?\}/);
+            if (jsonMatch) {
+                try {
+                    const jsonData = JSON.parse(jsonMatch[0]);
+                    console.log('[报告解析] 从Markdown中提取到JSON数据:', jsonData);
+                    // 使用结构化数据转换函数
+                    return convertSnakeToCamel(jsonData, conversationStats);
+                } catch (e) {
+                    console.log('[报告解析] JSON提取失败，继续Markdown解析');
+                }
+            }
+            
+            // snake_case 转 camelCase 辅助函数
+            function convertSnakeToCamel(data, stats) {
+                return {
+                    overallScore: data.overall_score || 50,
+                    scoreLevel: data.score_level || '一般',
+                    scoreDetails: (data.score_details || []).map(d => ({
+                        dimension: d.dimension || '',
+                        weight: d.weight || '0%',
+                        score: d.score || '0/0',
+                        weightedScore: d.weighted_score || 0,
+                        criteria: d.criteria || ''
+                    })),
+                    strengths: data.strengths || [],
+                    areasForImprovement: data.areas_for_improvement || [],
+                    suggestions: {
+                        jobSearch: (data.suggestions && data.suggestions.job_search) || '',
+                        careerGrowth: (data.suggestions && data.suggestions.career_growth) || []
+                    },
+                    conversationStats: stats || {
+                        userMessageCount: 0,
+                        totalUserMessageLength: 0,
+                        meaningfulResponses: 0
+                    }
+                };
+            }
+            
+            const result = {
+                overallScore: 60,
+                scoreLevel: '一般',
+                scoreDetails: [],
+                strengths: [],
+                areasForImprovement: [],
+                suggestions: { jobSearch: '', careerGrowth: [] },
+                conversationStats: conversationStats || { userMessageCount: 0, totalUserMessageLength: 0, meaningfulResponses: 0 }
+            };
+            
+            // 提取总分
+            const totalMatch = markdown.match(/\*\*总分\*\*.*?\|\s*\*\*(\d+)\*\*/s);
+            if (totalMatch) {
+                result.overallScore = parseInt(totalMatch[1], 10);
+            } else {
+                const scoreMatch = markdown.match(/\|\s*总分\s*\|.*?\|\s*(\d+)\s*\|/);
+                if (scoreMatch) result.overallScore = parseInt(scoreMatch[1], 10);
+            }
+            
+            // 提取评分等级
+            if (markdown.includes('强烈推荐') || markdown.includes('优秀')) {
+                result.scoreLevel = '优秀';
+            } else if (markdown.includes('良好')) {
+                result.scoreLevel = '良好';
+            } else if (markdown.includes('及格')) {
+                result.scoreLevel = '及格';
+            } else if (markdown.includes('较差')) {
+                result.scoreLevel = '较差';
+            }
+            
+            // 解析评分表格
+            const tableMatch = markdown.match(/\|\s*评分维度\s*\|.*?\|\s*得分\s*\|.*?(?:\n\|[-|]+\|)*\n((?:\|[^\n]+\n)+)/);
+            if (tableMatch) {
+                const rows = tableMatch[1].trim().split('\n');
+                rows.forEach(row => {
+                    const cols = row.split('|').map(c => c.trim()).filter(c => c);
+                    if (cols.length >= 3) {
+                        const dimension = cols[0].replace(/\*\*/g, '');
+                        const scorePart = cols[2];
+                        const scoreNum = parseInt(scorePart.match(/(\d+)/)?.[1] || '0', 10);
+                        
+                        let weight = '25%', maxScore = 25;
+                        if (dimension.includes('适配') || dimension.includes('匹配')) {
+                            weight = '40%'; maxScore = 40;
+                        } else if (dimension.includes('能力') || dimension.includes('表现')) {
+                            weight = '40%'; maxScore = 40;
+                        } else if (dimension.includes('潜力') || dimension.includes('成长')) {
+                            weight = '20%'; maxScore = 20;
+                        }
+                        
+                        result.scoreDetails.push({
+                            dimension,
+                            weight,
+                            score: `${scoreNum}/${maxScore}`,
+                            weightedScore: scoreNum,
+                            criteria: cols[3] || ''
+                        });
+                    }
+                });
+            }
+            
+            // 如果没有解析到评分，使用默认值
+            if (result.scoreDetails.length === 0) {
+                const score = result.overallScore;
+                result.scoreDetails = [
+                    { dimension: '岗位适配度', weight: '40%', score: `${Math.round(score * 0.4)}/40`, weightedScore: Math.round(score * 0.4), criteria: '根据面试表现评估' },
+                    { dimension: '核心能力表现', weight: '40%', score: `${Math.round(score * 0.4)}/40`, weightedScore: Math.round(score * 0.4), criteria: '根据面试表现评估' },
+                    { dimension: '成长潜力', weight: '20%', score: `${Math.round(score * 0.2)}/20`, weightedScore: Math.round(score * 0.2), criteria: '根据面试表现评估' }
+                ];
+            }
+            
+            // 提取优势
+            const strengthSection = markdown.match(/(?:核心优势|✨.*优势)[:：]?\s*\n((?:(?!###|##|---|📌|📈).+\n)+)/s);
+            if (strengthSection) {
+                const lines = strengthSection[1].trim().split('\n');
+                lines.forEach(line => {
+                    line = line.trim().replace(/^[*-]\s*/, '').replace(/^\d+[.、]\s*/, '');
+                    if (line && line.length > 5) result.strengths.push(line);
+                });
+            }
+            if (result.strengths.length === 0) {
+                const strengthMatches = markdown.matchAll(/(?:^|\n)\s*(?:[*•]|[0-9]+[.、])\s*([^*\n]+(?:技术|经验|能力|优势|清晰|扎实|展示)[^\n]*)/g);
+                for (const match of strengthMatches) {
+                    if (match[1] && match[1].length > 10) result.strengths.push(match[1].trim());
+                }
+            }
+            
+            // 提取待提升点
+            const improvementSection = markdown.match(/(?:待提升|📌.*提升)[:：]?\s*\n((?:(?!###|##|---|✨|🚀).+\n)+)/s);
+            if (improvementSection) {
+                const lines = improvementSection[1].trim().split('\n');
+                lines.forEach(line => {
+                    line = line.trim().replace(/^[*-]\s*/, '').replace(/^\d+[.、]\s*/, '');
+                    if (line && line.length > 5) result.areasForImprovement.push(line);
+                });
+            }
+            if (result.areasForImprovement.length === 0) {
+                const improvementMatches = markdown.matchAll(/(?:^|\n)\s*(?:[*•]|[0-9]+[.、])\s*([^*\n]+(?:建议|提升|可以|需要)[^\n]*)/g);
+                for (const match of improvementMatches) {
+                    if (match[1] && match[1].length > 10) result.areasForImprovement.push(match[1].trim());
+                }
+            }
+            
+            // 提取求职建议
+            const jobSuggestionMatch = markdown.match(/(?:求职建议|求职.*建议)[:：]?\s*[-–]?\s*(.+?)(?:\n|$)/s);
+            if (jobSuggestionMatch) {
+                result.suggestions.jobSearch = jobSuggestionMatch[1].trim();
+            }
+            
+            // 提取职业成长建议
+            const careerSection = markdown.match(/(?:职业成长|成长建议)[:：]?\s*\n((?:(?:(?!###|##|---|🎯|💡).+\n))+)/s);
+            if (careerSection) {
+                const items = careerSection[1].match(/(?:^|\n)\s*(?:[*•]|[0-9]+[.、])\s*(.+)/g);
+                if (items) {
+                    result.suggestions.careerGrowth = items.map(item => item.replace(/^[*\n\s]+/, '').replace(/^[*-]\s*/, '').replace(/^\d+[.、]\s*/, '').trim());
+                }
+            }
+            
+            // 确保有数据
+            if (result.strengths.length === 0) result.strengths = ['面试表现良好'];
+            if (result.areasForImprovement.length === 0) result.areasForImprovement = ['建议继续提升专业技能'];
+            if (!result.suggestions.jobSearch) result.suggestions.jobSearch = '继续提升专业技能，积累更多项目经验。';
+            if (result.suggestions.careerGrowth.length === 0) {
+                result.suggestions.careerGrowth = ['持续学习新技术', '积累更多实际项目经验', '培养业务理解能力'];
+            }
+            
+            console.log('[报告解析] Markdown解析完成:', result);
+            return result;
+        }
+
+        // ====== 评分计算 ======
+        function generateInterviewResultFromConversation() {
+            let userMessageCount = 0, totalUserMessageLength = 0, meaningfulResponses = 0;
+            conversationHistory.forEach(m => {
+                if (m.role === 'user' && m.content !== '结束面试') {
+                    userMessageCount++;
+                    totalUserMessageLength += m.content.length;
+                    if (m.content.length > 20) meaningfulResponses++;
+                }
+            });
+
+            let overallScore = 0, scoreLevel = '';
+            if (userMessageCount === 0 || (userMessageCount === 1 && totalUserMessageLength < 10)) {
+                overallScore = 30; scoreLevel = '较差';
+            } else {
+                const messageCountScore = Math.min(userMessageCount * 3, 30);
+                const messageLengthScore = Math.min(totalUserMessageLength / 20, 20);
+                const meaningfulScore = Math.min(meaningfulResponses * 10, 50);
+                overallScore = messageCountScore + messageLengthScore + meaningfulScore;
+                if (overallScore >= 85) scoreLevel = '优秀';
+                else if (overallScore >= 70) scoreLevel = '良好';
+                else if (overallScore >= 60) scoreLevel = '及格';
+                else scoreLevel = '较差';
+            }
+
+            let strengths = [], areasForImprovement = [], suggestions = { jobSearch: '', careerGrowth: [] };
+            if (overallScore >= 70) {
+                strengths = ['在面试过程中积极参与交流，展现了良好的沟通意愿', `共提供了${userMessageCount}条回复，显示出您的配合度和表达能力`];
+                areasForImprovement = ['可以在回答中提供更多具体的案例和细节，增强说服力', '对于一些问题的回答可以更加深入，展示您的专业深度'];
+                suggestions.jobSearch = '在后续面试中，建议您提供更多具体的工作案例和数据，这将有助于面试官更全面地了解您的能力。';
+                suggestions.careerGrowth = ['继续保持积极的学习态度，不断提升专业技能', '加强在面试中展示自己项目经验的能力'];
+            } else if (overallScore >= 60) {
+                strengths = ['能够对面试官的问题做出基本回应', '具备一定的表达意愿'];
+                areasForImprovement = [`回复内容相对简短，共${totalUserMessageLength}个字符，建议提供更详细的信息`, '可以在回答中加入更多具体的工作经验和技能展示'];
+                suggestions.jobSearch = '建议在面试前充分准备，对常见问题提前思考和组织答案，这样在面试中能更流畅地表达自己。';
+                suggestions.careerGrowth = ['提升面试表达能力，学习如何更清晰地展示自己的优势', '加强专业知识学习，为面试做好更充分的准备'];
+            } else {
+                strengths = ['完成了基础的面试流程'];
+                areasForImprovement = [`面试过程中回复较少（仅${userMessageCount}条），未能充分展示自己的能力和经验`, '回复内容较为简短，缺乏具体细节和案例支持'];
+                suggestions.jobSearch = '建议在后续面试中更加积极主动地展示自己，提供详细的工作经历和技能描述。';
+                suggestions.careerGrowth = ['提升面试技巧和沟通能力', '面试前进行充分准备，了解目标岗位需求并准备相应的案例'];
+            }
+
+            const jobFitScore = Math.round(overallScore * 0.4);
+            const coreAbilityScore = Math.round(overallScore * 0.4);
+            const growthPotentialScore = Math.round(overallScore * 0.2);
+
+            return {
+                overallScore: Math.round(overallScore * 10) / 10,
+                scoreLevel,
+                scoreDetails: [
+                    { dimension: '岗位适配度', weight: '40%', score: `${jobFitScore}/40`, weightedScore: Math.round(jobFitScore * 10) / 10, criteria: overallScore >= 70 ? '通过交流表现出与岗位需求的基本匹配度' : '需要更充分展示与岗位相关的能力和经验' },
+                    { dimension: '核心能力表现', weight: '40%', score: `${coreAbilityScore}/40`, weightedScore: Math.round(coreAbilityScore * 10) / 10, criteria: overallScore >= 70 ? '沟通表达能力基本符合岗位要求' : '需要提升表达能力和展示自己的能力' },
+                    { dimension: '成长潜力', weight: '20%', score: `${growthPotentialScore}/20`, weightedScore: Math.round(growthPotentialScore * 10) / 10, criteria: overallScore >= 70 ? '具备一定的学习和成长意愿' : '需要更积极地展示学习和成长的意愿' }
+                ],
+                strengths,
+                areasForImprovement,
+                suggestions,
+                conversationStats: { userMessageCount, totalUserMessageLength, meaningfulResponses }
+            };
+        }
+
+        // ====== 辅助 UI ======
+        function showWaitingStatus() {
+            document.getElementById('chat-messages').insertAdjacentHTML('beforeend', `
+                <div id="waiting-status" class="flex justify-center my-4">
+                    <div class="bg-blue-50 p-3 rounded-lg border border-blue-200 flex items-center gap-2 animate-pulse">
+                        <div class="typing-indicator"><span></span><span></span><span></span></div>
+                        <p class="text-blue-700 text-sm font-medium">正在处理结束面试请求...</p>
+                    </div>
+                </div>
+            `);
+            scrollToBottom();
+        }
+
+        function showErrorMessage(message) {
+            document.getElementById('chat-messages').insertAdjacentHTML('beforeend', `
+                <div class="flex justify-center my-4">
+                    <div class="bg-red-50 p-3 rounded-lg border border-red-200">
+                        <p class="text-red-700 text-sm font-medium">${escapeHtml(message)}</p>
+                    </div>
+                </div>
+            `);
+            scrollToBottom();
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // ====== 新建面试 ======
+        function startNewInterview() {
+            if (!confirm('确定要开始新的面试吗？当前面试内容将不会保存。')) return;
+            try { localStorage.removeItem('interviewSessionId'); } catch (e) {}
+            window.location.reload();
+        }
+
+        // ====== 历史记录 ======
+        async function loadHistory() {
+            try {
+                const res = await fetch('/api/interview/history?limit=30');
+                const data = await res.json();
+                const sidebar = document.getElementById('history-sidebar');
+                if (!data.success || !data.sessions?.length) {
+                    sidebar.innerHTML = '<div class="p-4 text-sm text-gray-400 text-center">暂无历史记录</div>';
+                    return;
+                }
+                sidebar.innerHTML = data.sessions.map(s => {
+                    const scoreHtml = s.score ? `<span class="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">${s.score}分</span>` : '';
+                    const timeStr = new Date(s.started_at).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+                    const durationStr = s.duration_sec ? ` · ${Math.round(s.duration_sec / 60)}分钟` : '';
+                    return `<div class="p-3 hover:bg-secondary cursor-pointer border-l-4 border-transparent hover:border-primary/30 transition-all"
+                             onclick="viewHistorySession('${s.session_id}')">
+                        <div class="flex justify-between items-start gap-1">
+                            <div class="font-medium text-sm text-dark truncate flex-1">${escapeHtml(s.topic || '模拟面试')}</div>
+                            ${scoreHtml}
+                        </div>
+                        <p class="text-xs text-gray-400 mt-0.5">${timeStr}${durationStr}</p>
+                    </div>`;
+                }).join('');
+            } catch (e) {
+                document.getElementById('history-sidebar').innerHTML = '<div class="p-4 text-sm text-gray-400 text-center">加载失败</div>';
+            }
+        }
+
+        async function viewHistorySession(sid) {
+            const modal = document.getElementById('history-modal');
+            const content = document.getElementById('history-modal-content');
+            const title = document.getElementById('history-modal-title');
+            content.innerHTML = '<div class="text-center py-4 text-gray-400">加载中...</div>';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            try {
+                const res = await fetch(`/api/interview/session/${sid}`);
+                const data = await res.json();
+                if (!data.success) {
+                    content.innerHTML = '<p class="text-red-500">加载失败</p>';
+                    return;
+                }
+                const s = data.session;
+                title.textContent = s.topic || '模拟面试';
+                const msgs = (Array.isArray(s.messages) ? s.messages : []).filter(m => m.role !== 'system');
+                const feedback = typeof s.feedback_json === 'object' ? s.feedback_json : {};
+                const durationMin = s.duration_sec ? Math.round(s.duration_sec / 60) : 0;
+
+                content.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="text-center bg-primary/10 rounded-lg p-3">
+                                <div class="text-2xl font-bold text-primary">${s.score || '-'}</div>
+                                <div class="text-xs text-gray-500">综合评分</div>
+                            </div>
+                            <div class="text-center bg-gray-50 rounded-lg p-3">
+                                <div class="text-2xl font-bold text-dark">${msgs.filter(m=>m.role==='user').length}</div>
+                                <div class="text-xs text-gray-500">回答数</div>
+                            </div>
+                            <div class="text-center bg-gray-50 rounded-lg p-3">
+                                <div class="text-2xl font-bold text-dark">${durationMin}</div>
+                                <div class="text-xs text-gray-500">时长(分钟)</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-500">
+                            <span>开始：${new Date(s.started_at).toLocaleString('zh-CN')}</span>
+                            ${s.ended_at ? ` · 结束：${new Date(s.ended_at).toLocaleString('zh-CN')}` : ''}
+                        </div>
+                        ${feedback.strengths?.length ? `
+                        <div>
+                            <div class="text-sm font-semibold text-dark mb-1">优势亮点</div>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                ${feedback.strengths.map(s => `<li class="flex gap-1"><span class="text-green-500">✓</span>${escapeHtml(s)}</li>`).join('')}
+                            </ul>
+                        </div>` : ''}
+                        ${feedback.areasForImprovement?.length ? `
+                        <div>
+                            <div class="text-sm font-semibold text-dark mb-1">改进建议</div>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                ${feedback.areasForImprovement.map(s => `<li class="flex gap-1"><span class="text-orange-400">→</span>${escapeHtml(s)}</li>`).join('')}
+                            </ul>
+                        </div>` : ''}
+                        <div>
+                            <div class="text-sm font-semibold text-dark mb-2">对话记录（${msgs.length} 条）</div>
+                            <div class="max-h-48 overflow-y-auto space-y-2 border rounded-lg p-2">
+                                ${msgs.map(m => `
+                                    <div class="text-xs ${m.role === 'user' ? 'text-right' : 'text-left'}">
+                                        <span class="inline-block ${m.role === 'user' ? 'bg-primary/10 text-primary' : 'bg-gray-100 text-gray-700'} rounded px-2 py-1 max-w-[90%]">
+                                            ${escapeHtml((m.content || '').substring(0, 200))}${m.content?.length > 200 ? '...' : ''}
+                                        </span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-2">
+                            <button onclick="deleteHistorySession('${s.session_id}')"
+                                class="text-sm text-red-500 hover:text-red-700 px-3 py-1 border border-red-200 rounded-md">
+                                删除记录
+                            </button>
+                            <button onclick="closeHistoryModal()"
+                                class="text-sm bg-primary text-white px-3 py-1 rounded-md hover:bg-primary/90">
+                                关闭
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } catch (e) {
+                content.innerHTML = `<p class="text-red-500">加载失败：${escapeHtml(e.message)}</p>`;
+            }
+        }
+
+        async function deleteHistorySession(sid) {
+            if (!confirm('确定要删除这条面试记录吗？')) return;
+            try {
+                await fetch(`/api/interview/session/${sid}`, { method: 'DELETE' });
+                closeHistoryModal();
+                loadHistory();
+            } catch (e) {
+                alert('删除失败：' + e.message);
+            }
+        }
+
+        function closeHistoryModal() {
+            const modal = document.getElementById('history-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // ====== 事件绑定 ======
+        document.getElementById('send-button').addEventListener('click', sendMessage);
+        document.getElementById('message-input').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // ====== 初始化 ======
+        scrollToBottom();
+        loadHistory();
+    </script>
+</body>
+</html>

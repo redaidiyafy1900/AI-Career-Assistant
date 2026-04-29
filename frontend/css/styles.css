@@ -1,0 +1,494 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: calc(100vh - 60px);
+}
+
+/* 头部样式 */
+header {
+    text-align: center;
+    padding: 40px 0;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+header p {
+    font-size: 1.2rem;
+    color: #7f8c8d;
+}
+
+/* 功能卡片样式 */
+.features {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 40px 0;
+}
+
+.feature-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin: 15px;
+    width: 300px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 添加右上角彩色条纹点缀 */
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 60px;
+    background: repeating-linear-gradient(45deg,
+            transparent,
+            transparent 5px,
+            rgba(255, 255, 255, 0.5) 5px,
+            rgba(255, 255, 255, 0.5) 10px);
+    clip-path: polygon(100% 0, 0 0, 100% 100%);
+    z-index: 1;
+}
+
+/* 为每个功能卡片设置不同的条纹颜色 */
+#resume-parser::before {
+    background: repeating-linear-gradient(45deg,
+            #3498db,
+            #3498db 5px,
+            #2980b9 5px,
+            #2980b9 10px);
+}
+
+#interview-coach::before {
+    background: repeating-linear-gradient(45deg,
+            #2ecc71,
+            #2ecc71 5px,
+            #27ae60 5px,
+            #27ae60 10px);
+}
+
+#job-recommender::before {
+    background: repeating-linear-gradient(45deg,
+            #e74c3c,
+            #e74c3c 5px,
+            #c0392b 5px,
+            #c0392b 10px);
+}
+
+.feature-card:hover {
+    transform: translateY(-20px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(to left,
+            #3498db,
+            #2ecc71,
+            #e74c3c);
+    clip-path: none;
+    z-index: 1;
+}
+
+#resume-parser::before,
+#interview-coach::before,
+#job-recommender::before {
+    background: linear-gradient(to left, #3498db, #2980b9);
+}
+
+#interview-coach::before {
+    background: linear-gradient(to left, #2ecc71, #27ae60);
+}
+
+#job-recommender::before {
+    background: linear-gradient(to left, #e74c3c, #c0392b);
+}
+
+.feature-card h2 {
+    margin: 20px 0 10px;
+    color: #2c3e50;
+}
+
+.feature-card p {
+    color: #7f8c8d;
+}
+
+/* 图标样式 */
+.icon-container {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    font-size: 4rem;
+    /* 新增：添加背景渐变动画 */
+    background-size: 200% 200%;
+    animation: gradientBG 5s ease infinite;
+}
+
+/* 为每个功能卡片设置不同的emoji颜色和渐变 */
+#resume-parser .icon-container {
+    color: #9c27b0;
+    background: linear-gradient(-45deg, #fce4ec, #f8bbd0, #e1bee7, #ce93d8);
+    /* 粉紫渐变 - 时尚感 */
+}
+
+#interview-coach .icon-container {
+    color: #00bcd4;
+    background: linear-gradient(-45deg, #e0f7fa, #b2ebf2, #80deea, #4dd0e1);
+    /* 青蓝渐变 - 清新感 */
+}
+
+#job-recommender .icon-container {
+    color: #ff9800;
+    background: linear-gradient(-45deg, #fff8e1, #ffecb3, #ffe082, #ffd54f);
+    /* 橙黄渐变 - 活力感 */
+}
+
+/* 上传区域图标增强 */
+.upload-icon {
+    font-size: 6rem;
+    margin-bottom: 20px;
+    transition: all 0.5s ease;
+    /* 霓虹彩虹渐变 */
+    background: linear-gradient(45deg, #ff6b6b, #ff8e53, #ffbe40, #4ecdc4, #8e44ad, #ff6b6b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 400% 400%;
+    animation: gradientText 8s ease infinite;
+}
+
+.upload-area:hover .upload-icon {
+    transform: scale(1.2) rotate(10deg);
+    animation: gradientText 3s ease infinite, bounce 1s ease;
+}
+
+/* 文字渐变动画 */
+@keyframes gradientText {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* 弹跳动画 */
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1.2) rotate(10deg);
+    }
+
+    50% {
+        transform: translateY(-10px) scale(1.2) rotate(10deg);
+    }
+}
+
+/* 脉冲动画修改 */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.feature-card:hover .icon-container {
+    animation: pulse 1s infinite;
+}
+
+/* 详情页面样式 */
+#feature-detail {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin: 20px 0;
+}
+
+#back-button {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    /* 渐变背景 */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    /* 增加内边距 */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    /* 增加过渡效果 */
+    display: inline-flex;
+    /* 使用弹性布局 */
+    align-items: center;
+    /* 垂直居中 */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    /* 添加阴影 */
+}
+
+#back-button i {
+    margin-right: 8px;
+    /* 图标与文字间距 */
+    transition: transform 0.3s ease;
+    /* 图标过渡效果 */
+}
+
+#back-button:hover {
+    background: linear-gradient(135deg, #2980b9, #1a5276);
+    /* 悬停渐变 */
+    transform: translateY(-3px);
+    /* 悬停上移 */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    /* 增强阴影 */
+}
+
+#back-button:hover i {
+    transform: translateX(-3px);
+    /* 悬停时图标左移 */
+}
+
+.hidden {
+    display: none;
+}
+
+/* 页脚样式 */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #2c3e50;
+    color: white;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .features {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .feature-card {
+        width: 90%;
+        max-width: 400px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+}
+
+/* 文件上传区域样式 */
+.upload-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 50;
+}
+
+.upload-area {
+    position: relative;
+    border: 2px dashed #3498db;
+    padding: 20px;
+    text-align: center;
+    margin: 20px 0;
+    border-radius: 5px;
+}
+
+.upload-trigger {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 50;
+    /* 确保在其他元素之上，但低于文件输入框 */
+}
+
+#analyze-btn {
+    margin: 20px auto;
+    display: block;
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.1em;
+    font-weight: 600;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.2);
+}
+
+#analyze-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
+}
+
+#analyze-btn:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 图表容器样式 */
+.charts-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0;
+    position: relative;
+    height: 350px;
+    width: 100%;
+}
+
+/* 修改图表容器样式 */
+.profile-chart,
+.radar-chart {
+    width: 48%;
+    height: 300px;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+/* 图表放大状态样式 - 关键修改 */
+.profile-chart.zoomed,
+.radar-chart.zoomed {
+    position: relative;
+    width: 48%;
+    /* 保持原来的宽度 */
+    height: 300px;
+    /* 保持原来的高度 */
+    transform: scale(1.2);
+    /* 仅放大，不改变位置 */
+    transform-origin: center center;
+    /* 从中心放大 */
+    z-index: 1000;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* 为每个图表添加唯一标识样式，确保顺序不变 */
+.profile-chart {
+    order: 1;
+}
+
+.radar-chart {
+    order: 2;
+}
+
+.charts-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.score-display {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+    color: #2c3e50;
+}
+
+.suggestions {
+    margin-top: 30px;
+}
+
+.suggestions h3 {
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+.suggestions ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.suggestions li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 25px;
+}
+
+.suggestions li:before {
+    content: '\f0da';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    color: #3498db;
+}
+
+.suggestions li {
+    margin-bottom: 8px;
+}

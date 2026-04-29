@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择面试类型 - 智能职业发展助手</title>
+    <style>
+        /* 全局样式重置（纯原生CSS，无框架依赖） */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'SF Pro', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+        }
+
+        /* 全局 CSS 变量 - 蓝色主题 */
+        :root {
+            --primary: #2C7BE5;
+            --primary-dark: #1E40AF;
+            --primary-light: #3B82F6;
+            --bg-primary: #F5F9FC;
+            --bg-secondary: #FFFFFF;
+            --text-primary: #1A365D;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --border: #E5E7EB;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(44, 123, 229, 0.15);
+            
+            --radius-sm: 8px;
+            --radius: 12px; 
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            
+            --transition-fast: all 0.2s ease;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: all 0.5s ease;
+            
+            --gradient-radial: radial-gradient(circle at top right, var(--bg-primary) 0%, var(--white) 100%);
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--bg-primary) 0%, var(--white) 85%, var(--white) 100%);
+            --gradient-text: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 50%, var(--primary-dark) 100%);
+            --gradient-hover: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 60%, var(--primary-dark) 100%);
+        }
+
+        /* 根容器 - 经典三段式布局核心容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--gradient-radial);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            z-index: 1000;
+            transition: var(--transition-fast);
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .navbar-brand .logo {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: var(--transition-fast);
+            position: relative;
+        }
+
+        .navbar-link:hover {
+            color: var(--primary);
+        }
+
+        .navbar-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: var(--transition-fast);
+        }
+
+        .navbar-link:hover::after {
+            width: 100%;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--gradient-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .btn-text {
+            background: transparent;
+            color: var(--primary-600);
+        }
+
+        .btn-text:hover {
+            color: var(--primary-700);
+            text-decoration: underline;
+        }
+
+        /* 面试选择页面 */
+        .interview-choice {
+            padding: 120px 0 80px;
+        }
+
+        .interview-choice-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .interview-choice-header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .interview-choice-header p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .interview-options {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .interview-option {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+            width: 400px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .interview-option:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-light);
+        }
+
+        .interview-option-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin: 0 auto 2rem;
+        }
+
+        .interview-option h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .interview-option p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .interview-option-features {
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .interview-option-features li {
+            list-style: none;
+            padding: 0.5rem 0;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .interview-option-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* 页脚 */
+        footer {
+            background: var(--bg-secondary);
+            padding: 3rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-col h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .footer-col p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-col a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-col a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1280px) {
+            .container,
+            .navbar-container {
+                max-width: 1100px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .container,
+            .navbar-container {
+                max-width: 960px;
+                padding: 0 20px;
+            }
+            .interview-choice-header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container,
+            .navbar-container {
+                max-width: 100%;
+                padding: 0 16px;
+            }
+            .navbar-links {
+                display: none;
+            }
+
+            .interview-choice {
+                padding: 100px 0 60px;
+            }
+
+            .interview-choice-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .interview-choice-header p {
+                font-size: 1rem;
+            }
+
+            .interview-options {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+            }
+
+            .interview-option {
+                width: 100%;
+                max-width: 400px;
+                padding: 2rem;
+            }
+
+            .interview-option-icon {
+                width: 64px;
+                height: 64px;
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container,
+            .navbar-container {
+                padding: 0 12px;
+            }
+            .interview-choice-header h1 {
+                font-size: 1.5rem;
+            }
+            .interview-option {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <div class="logo">AI</div>
+                <span>智能职业助手</span>
+            </a>
+            <div class="navbar-links">
+                <a href="index.html" class="navbar-link">首页</a>
+                <a href="interview_choice.html" class="navbar-link">智能面试</a>
+                <a href="resume_analysis.html" class="navbar-link">简历分析</a>
+                <a href="#" class="btn btn-primary">立即体验</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 面试选择页面 -->
+    <section class="interview-choice">
+        <div class="container">
+            <div class="interview-choice-header">
+                <h1>选择面试类型</h1>
+                <p>根据您的需求选择适合的面试方式，我们提供多种面试模式供您选择</p>
+            </div>
+            
+            <div class="interview-options">
+                <!-- 文字面试选项 -->
+                <div class="interview-option">
+                    <div class="interview-option-icon">
+                        <i class="ri-chat-3-fill"></i>
+                    </div>
+                    <h3>文字面试</h3>
+                    <p>通过文字形式进行面试，适合打字速度快、喜欢思考后回答的用户</p>
+                    <ul class="interview-option-features">
+                        <li>文字形式交流，思考时间充分</li>
+                        <li>适合打字速度快的用户</li>
+                        <li>可保存面试记录</li>
+                        <li>随时随地进行面试</li>
+                    </ul>
+                    <a href="interview_coach.html" class="btn btn-primary">开始文字面试</a>
+                </div>
+
+                <!-- 真人视频面试选项 -->
+                <div class="interview-option">
+                    <div class="interview-option-icon">
+                        <i class="ri-video-fill"></i>
+                    </div>
+                    <h3>真人视频面试</h3>
+                    <p>通过视频形式进行面试，模拟真实面试场景，提升面试表现</p>
+                    <ul class="interview-option-features">
+                        <li>视频形式交流，模拟真实面试</li>
+                        <li>锻炼表达能力和临场反应</li>
+                        <li>实时反馈和评估</li>
+                        <li>提升面试自信心</li>
+                    </ul>
+                    <a href="interview_3d.html" class="btn btn-primary">开始视频面试</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer id="about">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h4>智能职业助手</h4>
+                    <p>助力您的职业成长，让求职更简单、更高效。基于AI大模型的智能求职解决方案，覆盖面试、简历、岗位匹配全流程。</p>
+                </div>
+                <div class="footer-col">
+                    <h4>功能导航</h4>
+                    <ul>
+                        <li><a href="interview_choice.html"><i class="ri-arrow-right-s-fill"></i> 智能面试模拟</a></li>
+                        <li><a href="resume_analysis.html"><i class="ri-arrow-right-s-fill"></i> 简历分析系统</a></li>
+                        <li><a href="#"><i class="ri-arrow-right-s-fill"></i> 智能岗位推荐</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>联系我们</h4>
+                    <ul>
+                        <li><a href="#"><i class="ri-headphone-fill"></i> 客服支持</a></li>
+                        <li><a href="#"><i class="ri-chat-3-fill"></i> 意见反馈</a></li>
+                        <li><a href="#"><i class="ri-handshake-fill"></i> 商务合作</a></li>
+                        <li><a href="#"><i class="ri-mail-fill"></i> 邮箱联系</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2025 智能职业发展助手 - 助力您的职业成长 | 版权所有</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "resume_count": 2,
+    "job_count": 3
+  },
+  "resumes": [
+    {
+      "id": "R01",
+      "name": "Test1",
+      "raw": "This is test raw text with no special chars"
+    },
+    {
+      "id": "R02",
+      "name": "Test2",
+      "raw": "Another test text here"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "J001",
+      "title": "Job1"
+    },
+    {
+      "id": "J002",
+      "title": "Job2"
+    },
+    {
+      "id": "J003",
+      "title": "Job3"
+    }
+  ]
+}

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简历优化 - 智能职业发展助手</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+        :root {
+            --primary: #2C7BE5; --primary-dark: #1E40AF;
+            --bg-primary: #F5F9FC; --bg-secondary: #FFFFFF;
+            --text-primary: #1A365D; --text-secondary: #6B7280; --text-muted: #9CA3AF;
+            --border: #E5E7EB; --success-bg: #E6F7E6; --success-text: #166534;
+            --danger-bg: #FCE8E6; --danger-text: #991B1B;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --shadow: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08); --radius: 8px;
+        }
+        body { background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        .navbar { background: var(--bg-secondary); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .navbar-content { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        .navbar-brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--text-primary); text-decoration: none; }
+        .brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; }
+        .navbar-back { color: var(--primary); text-decoration: none; font-size: 14px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; width: 100%; box-sizing: border-box; }
+        .page-header { margin-bottom: 32px; }
+        .step-nav { background: white; border-bottom: 1px solid var(--border); padding: 8px 24px; }
+        .step-nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 0; flex-wrap: wrap; width: 100%; box-sizing: border-box; }
+        .step-link { font-size: 12px; padding: 4px 10px; border-radius: 20px; color: var(--text-secondary); text-decoration: none; white-space: nowrap; transition: all 0.2s; }
+        .step-link:hover { color: var(--primary); background: #EFF6FF; }
+        .step-link.active { background: var(--primary); color: white; font-weight: 600; }
+        .step-arrow { color: var(--text-muted); font-size: 11px; margin: 0 1px; }
+        .step-nav-btns { margin-left: auto; display: flex; gap: 8px; }
+        .btn-step { font-size: 12px; padding: 4px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: white; color: var(--text-secondary); cursor: pointer; text-decoration: none; transition: all 0.2s; }
+        .btn-step:hover { border-color: var(--primary); color: var(--primary); }
+        .page-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .page-subtitle { font-size: 15px; color: var(--text-secondary); }
+        .card { background: white; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 24px; margin-bottom: 24px; }
+        .card-title { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .form-label { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+        .form-select { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; color: var(--text-primary); background: white; outline: none; cursor: pointer; }
+        .form-select:focus { border-color: var(--primary); }
+        .btn { padding: 10px 24px; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; text-decoration: none; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-primary:disabled { background: #93c5fd; cursor: not-allowed; }
+        .btn-secondary { background: white; color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-sm { padding: 6px 14px; font-size: 13px; }
+        .alert { padding: 12px 16px; border-radius: var(--radius); font-size: 14px; margin-bottom: 16px; }
+        .alert-info { background: #EFF6FF; color: #1d4ed8; }
+        .alert-success { background: var(--success-bg); color: var(--success-text); }
+        .alert-error { background: var(--danger-bg); color: var(--danger-text); }
+        .options-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+        .option-item { border: 2px solid var(--border); border-radius: var(--radius); padding: 14px; cursor: pointer; transition: all 0.2s; }
+        .option-item.selected { border-color: var(--primary); background: #EFF6FF; }
+        .option-icon { font-size: 20px; margin-bottom: 6px; }
+        .option-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+        .option-desc { font-size: 12px; color: var(--text-secondary); }
+        .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th { background: var(--bg-primary); padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 12px; border-bottom: 1px solid var(--border); }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tr:hover td { background: var(--bg-primary); }
+        .empty-state { text-align: center; padding: 48px; color: var(--text-muted); }
+        .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+        .hidden { display: none !important; }
+
+        /* 响应式设计 */
+        @media (max-width: 1280px) {
+            .container,
+            .navbar-content,
+            .step-nav-inner {
+                max-width: 1100px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .container,
+            .navbar-content,
+            .step-nav-inner {
+                max-width: 960px;
+                padding: 0 20px;
+            }
+            .container {
+                padding: 28px 20px;
+            }
+            .options-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container,
+            .navbar-content,
+            .step-nav-inner {
+                max-width: 100%;
+                padding: 0 16px;
+            }
+            .container {
+                padding: 24px 16px;
+            }
+            .page-title {
+                font-size: 24px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container,
+            .navbar-content,
+            .step-nav-inner {
+                padding: 0 12px;
+            }
+            .container {
+                padding: 20px 12px;
+            }
+            .page-title {
+                font-size: 20px;
+            }
+            .card {
+                padding: 20px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="navbar-content">
+        <a href="/" class="navbar-brand"><div class="brand-icon">智</div>智能职业发展助手</a>
+        <a href="/" class="navbar-back">← 返回首页</a>
+    </div>
+</nav>
+<div class="step-nav"><div class="step-nav-inner">
+  <a href="job_scraper.html" class="step-link">1 岗位采集</a><span class="step-arrow">›</span>
+  <a href="resume_manage.html" class="step-link">2 简历管理</a><span class="step-arrow">›</span>
+  <a href="job_match.html" class="step-link">3 岗位匹配</a><span class="step-arrow">›</span>
+  <a href="resume_optimize.html" class="step-link active">4 简历优化</a><span class="step-arrow">›</span>
+  <a href="auto_apply.html" class="step-link">5 自动投递</a><span class="step-arrow">›</span>
+  <a href="interview_coach.html" class="step-link">6 模拟面试</a>
+  <div class="step-nav-btns"><a href="job_match.html" class="btn-step">‹ 上一步</a><a href="auto_apply.html" class="btn-step">下一步 ›</a></div>
+:</div></div>
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">✨ 简历优化</h1>
+        <p class="page-subtitle">针对目标岗位 AI 定制优化简历，一键生成专业 PDF</p>
+    </div>
+
+    <!-- 优化配置 -->
+    <div class="card">
+        <div class="card-title">⚙️ 优化配置</div>
+        <div id="optimizeAlert" class="hidden"></div>
+        <div class="form-row">
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">选择简历 *</label>
+                <select id="resumeSelect" class="form-select">
+                    <option value="">加载中...</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label class="form-label">目标岗位 *</label>
+                <select id="jobSelect" class="form-select">
+                    <option value="">加载中...</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">优化选项（可多选）</label>
+            <div class="options-grid">
+                <div class="option-item" data-option="add_missing_skills" onclick="this.classList.toggle('selected')">
+                    <div class="option-icon">🔧</div>
+                    <div class="option-title">补充技能</div>
+                    <div class="option-desc">在技能栏补充岗位要求的技能（标注「学习中」）</div>
+                </div>
+                <div class="option-item selected" data-option="add_metrics" onclick="this.classList.toggle('selected')">
+                    <div class="option-icon">📊</div>
+                    <div class="option-title">量化成果</div>
+                    <div class="option-desc">为经历描述添加可量化的成果数据</div>
+                </div>
+                <div class="option-item selected" data-option="strengthen_summary" onclick="this.classList.toggle('selected')">
+                    <div class="option-icon">💡</div>
+                    <div class="option-title">强化总结</div>
+                    <div class="option-desc">重写自我评价，突出与岗位匹配的核心竞争力</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:flex;gap:12px;">
+            <button class="btn btn-primary" onclick="startOptimize()" id="optimizeBtn">
+                <span id="optimizeBtnContent">✨ 开始优化并生成 PDF</span>
+            </button>
+            <a href="resume_manage.html" class="btn btn-secondary">管理简历</a>
+            <a href="job_scraper.html" class="btn btn-secondary">采集岗位</a>
+        </div>
+    </div>
+
+    <!-- 历史记录 -->
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <div class="card-title" style="margin:0;">📁 已生成的简历</div>
+            <button class="btn btn-secondary btn-sm" onclick="loadTailored()">🔄 刷新</button>
+        </div>
+        <div id="tailoredContainer">
+            <div class="empty-state"><div class="icon">📄</div><p>暂无定制简历</p><p style="font-size:13px;">选择简历和岗位后点击「开始优化」</p></div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Pre-select job from URL param
+const urlParams = new URLSearchParams(window.location.search);
+const preJobId = urlParams.get('job_id');
+
+async function loadData() {
+    const [resumeRes, jobRes] = await Promise.all([
+        fetch('/api/resume/list'), fetch('/api/jobs/list')
+    ]);
+    const [rd, jd] = await Promise.all([resumeRes.json(), jobRes.json()]);
+
+    const resumeSel = document.getElementById('resumeSelect');
+    resumeSel.innerHTML = '<option value="">请选择简历...</option>' +
+        (rd.resumes || []).map(r =>
+            `<option value="${r.id}" ${r.is_primary ? 'selected' : ''}>
+                ${r.parsed_data?.name || r.file_name}${r.is_primary ? ' (主简历)' : ''}
+            </option>`
+        ).join('');
+
+    const jobSel = document.getElementById('jobSelect');
+    jobSel.innerHTML = '<option value="">请选择目标岗位...</option>' +
+        (jd.jobs || []).map(j =>
+            `<option value="${j.id}" ${String(j.id) === preJobId ? 'selected' : ''}>
+                ${j.title} - ${j.company}
+            </option>`
+        ).join('');
+}
+
+async function startOptimize() {
+    const resumeId = document.getElementById('resumeSelect').value;
+    const jobId = document.getElementById('jobSelect').value;
+    if (!resumeId) { showAlert('optimizeAlert', 'error', '⚠️ 请选择简历'); return; }
+    if (!jobId) { showAlert('optimizeAlert', 'error', '⚠️ 请选择目标岗位'); return; }
+
+    const options = {};
+    document.querySelectorAll('.option-item.selected').forEach(el => {
+        options[el.dataset.option] = true;
+    });
+
+    const btn = document.getElementById('optimizeBtn');
+    btn.disabled = true;
+    document.getElementById('optimizeBtnContent').innerHTML = '<span class="spinner"></span> AI 优化中，请耐心等待...';
+    document.getElementById('optimizeAlert').classList.add('hidden');
+
+    try {
+        const res = await fetch('/api/resume/optimize', {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({resume_id: resumeId, job_id: jobId, options})
+        });
+        const data = await res.json();
+        if (data.success) {
+            showAlert('optimizeAlert', 'success',
+                `✅ 优化完成！已生成简历：<b>${data.file_name}</b>
+                 <a href="/api/resume/tailored/download/${data.tailored_id}" class="btn btn-primary btn-sm" style="margin-left:12px;padding:4px 12px;">⬇ 下载 PDF</a>`);
+            loadTailored();
+        } else {
+            showAlert('optimizeAlert', 'error', `❌ ${data.error}`);
+        }
+    } catch (e) {
+        showAlert('optimizeAlert', 'error', `❌ 请求失败：${e.message}`);
+    } finally {
+        btn.disabled = false;
+        document.getElementById('optimizeBtnContent').textContent = '✨ 开始优化并生成 PDF';
+    }
+}
+
+function showAlert(id, type, msg) {
+    const el = document.getElementById(id);
+    el.className = `alert alert-${type}`;
+    el.innerHTML = msg;
+    el.classList.remove('hidden');
+}
+
+async function loadTailored() {
+    const res = await fetch('/api/resume/tailored/list');
+    const data = await res.json();
+    const container = document.getElementById('tailoredContainer');
+    if (!data.resumes?.length) {
+        container.innerHTML = '<div class="empty-state"><div class="icon">📄</div><p>暂无定制简历</p><p style="font-size:13px;">选择简历和岗位后点击「开始优化」</p></div>';
+        return;
+    }
+    container.innerHTML = `<div class="table-wrap"><table>
+        <thead><tr><th>文件名</th><th>目标岗位</th><th>目标公司</th><th>生成时间</th><th>操作</th></tr></thead>
+        <tbody>${data.resumes.map(r => `<tr>
+            <td>${r.file_name}</td>
+            <td>${r.job_title || '-'}</td>
+            <td>${r.job_company || '-'}</td>
+            <td>${new Date(r.created_at).toLocaleString('zh-CN')}</td>
+            <td><a href="/api/resume/tailored/download/${r.id}" class="btn btn-primary btn-sm">⬇ 下载</a></td>
+        </tr>`).join('')}</tbody>
+    </table></div>`;
+}
+
+loadData();
+loadTailored();
+</script>
+</body>
+</html>

@@ -1,0 +1,1214 @@
+{
+  "exact_match_rate": 100.0,
+  "within1_rate": 100.0,
+  "pearson": 0.9849,
+  "mae": 2.93,
+  "rmse": 3.68,
+  "accuracy": 99.0,
+  "grade": "A（优秀）",
+  "ai_overestimate_count": 77,
+  "ai_underestimate_count": 41,
+  "ai_equal_count": 2,
+  "ai_distribution": {
+    "1": 48,
+    "2": 40,
+    "3": 22,
+    "4": 8,
+    "5": 2
+  },
+  "hr_distribution": {
+    "1": 48,
+    "2": 40,
+    "3": 22,
+    "4": 8,
+    "5": 2
+  },
+  "records": [
+    {
+      "record_id": "M001",
+      "resume_name": "张伟(软件工程)",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 84.4,
+      "hr_total": 84.1,
+      "hr_label": 5
+    },
+    {
+      "record_id": "M002",
+      "resume_name": "张伟(软件工程)",
+      "job_title": "后端开发工程师(C#)-长陆自动化",
+      "job_category": "技术开发",
+      "ai_total": 47.6,
+      "hr_total": 46.0,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M003",
+      "resume_name": "张伟(软件工程)",
+      "job_title": "图像算法工程师(AI)-明锐理想",
+      "job_category": "技术研发",
+      "ai_total": 44.0,
+      "hr_total": 48.1,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M004",
+      "resume_name": "张伟(软件工程)",
+      "job_title": "初中语文老师-科翰教育",
+      "job_category": "教育培训",
+      "ai_total": 47.6,
+      "hr_total": 45.3,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M005",
+      "resume_name": "李娜(电子信息工程)",
+      "job_title": "电子工程师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 48.6,
+      "hr_total": 47.0,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M006",
+      "resume_name": "李娜(电子信息工程)",
+      "job_title": "物联网工程师-飞尔特能源",
+      "job_category": "技术研发",
+      "ai_total": 48.0,
+      "hr_total": 46.5,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M007",
+      "resume_name": "李娜(电子信息工程)",
+      "job_title": "自动化机械设计师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 44.0,
+      "hr_total": 43.1,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M008",
+      "resume_name": "李娜(电子信息工程)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 25.8,
+      "hr_total": 23.1,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M009",
+      "resume_name": "王浩然(机械设计制造及自动化)",
+      "job_title": "自动化机械设计师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 46.0,
+      "hr_total": 52.1,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M010",
+      "resume_name": "王浩然(机械设计制造及自动化)",
+      "job_title": "电子工程师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 26.6,
+      "hr_total": 22.2,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M011",
+      "resume_name": "王浩然(机械设计制造及自动化)",
+      "job_title": "图像算法工程师(AI)-明锐理想",
+      "job_category": "技术研发",
+      "ai_total": 24.8,
+      "hr_total": 26.6,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M012",
+      "resume_name": "王浩然(机械设计制造及自动化)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 24.0,
+      "hr_total": 23.1,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M013",
+      "resume_name": "陈思雨(会计学)",
+      "job_title": "注册会计师审计助理-均正事务所",
+      "job_category": "财务金融",
+      "ai_total": 45.0,
+      "hr_total": 53.5,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M014",
+      "resume_name": "陈思雨(会计学)",
+      "job_title": "财务专员-理想汽车",
+      "job_category": "财务金融",
+      "ai_total": 64.6,
+      "hr_total": 76.9,
+      "hr_label": 4
+    },
+    {
+      "record_id": "M015",
+      "resume_name": "陈思雨(会计学)",
+      "job_title": "软件工程师-明锐理想(C++)",
+      "job_category": "硬件研发",
+      "ai_total": 23.2,
+      "hr_total": 24.2,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M016",
+      "resume_name": "陈思雨(会计学)",
+      "job_title": "HR专员-慧通(广西)",
+      "job_category": "人力资源",
+      "ai_total": 24.4,
+      "hr_total": 28.1,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M017",
+      "resume_name": "刘子轩(市场营销)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 27.2,
+      "hr_total": 27.7,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M018",
+      "resume_name": "刘子轩(市场营销)",
+      "job_title": "国内营销-得力集团",
+      "job_category": "市场营销",
+      "ai_total": 45.6,
+      "hr_total": 43.1,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M019",
+      "resume_name": "刘子轩(市场营销)",
+      "job_title": "电子工程师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 12.6,
+      "hr_total": 6.2,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M020",
+      "resume_name": "刘子轩(市场营销)",
+      "job_title": "初中理化老师-科翰教育",
+      "job_category": "教育培训",
+      "ai_total": 11.2,
+      "hr_total": 6.0,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M021",
+      "resume_name": "赵雅琪(汉语言文学(师范))",
+      "job_title": "初中语文老师-科翰教育",
+      "job_category": "教育培训",
+      "ai_total": 65.0,
+      "hr_total": 64.7,
+      "hr_label": 4
+    },
+    {
+      "record_id": "M022",
+      "resume_name": "赵雅琪(汉语言文学(师范))",
+      "job_title": "市场策划专员-金意陶陶瓷",
+      "job_category": "市场营销",
+      "ai_total": 26.4,
+      "hr_total": 26.1,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M023",
+      "resume_name": "赵雅琪(汉语言文学(师范))",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 6.6,
+      "hr_total": 7.2,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M024",
+      "resume_name": "赵雅琪(汉语言文学(师范))",
+      "job_title": "电子工程师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 7.2,
+      "hr_total": 6.0,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M025",
+      "resume_name": "黄俊杰(计算机科学与技术)",
+      "job_title": "图像算法工程师(AI)-明锐理想",
+      "job_category": "技术研发",
+      "ai_total": 63.2,
+      "hr_total": 69.1,
+      "hr_label": 4
+    },
+    {
+      "record_id": "M026",
+      "resume_name": "黄俊杰(计算机科学与技术)",
+      "job_title": "人工智能算法工程师-金意陶陶瓷",
+      "job_category": "技术研发",
+      "ai_total": 64.4,
+      "hr_total": 62.1,
+      "hr_label": 4
+    },
+    {
+      "record_id": "M027",
+      "resume_name": "黄俊杰(计算机科学与技术)",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 45.6,
+      "hr_total": 45.9,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M028",
+      "resume_name": "黄俊杰(计算机科学与技术)",
+      "job_title": "初中语文老师-科翰教育",
+      "job_category": "教育培训",
+      "ai_total": 10.0,
+      "hr_total": 5.6,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M029",
+      "resume_name": "周婷婷(金融学)",
+      "job_title": "中国工商银行深圳市分行2026春招",
+      "job_category": "银行金融",
+      "ai_total": 63.0,
+      "hr_total": 64.9,
+      "hr_label": 4
+    },
+    {
+      "record_id": "M030",
+      "resume_name": "周婷婷(金融学)",
+      "job_title": "财务专员-理想汽车",
+      "job_category": "财务金融",
+      "ai_total": 43.4,
+      "hr_total": 44.0,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M031",
+      "resume_name": "周婷婷(金融学)",
+      "job_title": "信息安全工程师-中建一局",
+      "job_category": "技术研发",
+      "ai_total": 11.6,
+      "hr_total": 6.3,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M032",
+      "resume_name": "周婷婷(金融学)",
+      "job_title": "软件工程师-明锐理想(C++)",
+      "job_category": "硬件研发",
+      "ai_total": 24.4,
+      "hr_total": 26.3,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M033",
+      "resume_name": "吴明辉(土木工程)",
+      "job_title": "技术方案工程师-天俱时",
+      "job_category": "技术服务",
+      "ai_total": 5.6,
+      "hr_total": 6.1,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M034",
+      "resume_name": "吴明辉(土木工程)",
+      "job_title": "自动化机械设计师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 5.8,
+      "hr_total": 4.8,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M035",
+      "resume_name": "吴明辉(土木工程)",
+      "job_title": "软件工程师-明锐理想(C++)",
+      "job_category": "硬件研发",
+      "ai_total": 9.6,
+      "hr_total": 5.2,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M036",
+      "resume_name": "吴明辉(土木工程)",
+      "job_title": "行政文秘-均正事务所",
+      "job_category": "行政后勤",
+      "ai_total": 26.6,
+      "hr_total": 26.0,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M037",
+      "resume_name": "孙悦(人力资源管理)",
+      "job_title": "HR专员-慧通(广西)",
+      "job_category": "人力资源",
+      "ai_total": 91.0,
+      "hr_total": 90.0,
+      "hr_label": 5
+    },
+    {
+      "record_id": "M038",
+      "resume_name": "孙悦(人力资源管理)",
+      "job_title": "行政文秘-均正事务所",
+      "job_category": "行政后勤",
+      "ai_total": 24.2,
+      "hr_total": 22.4,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M039",
+      "resume_name": "孙悦(人力资源管理)",
+      "job_title": "财务专员-理想汽车",
+      "job_category": "财务金融",
+      "ai_total": 23.8,
+      "hr_total": 21.0,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M040",
+      "resume_name": "孙悦(人力资源管理)",
+      "job_title": "电子工程师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 10.6,
+      "hr_total": 6.1,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M041",
+      "resume_name": "郑凯文(物联网工程)",
+      "job_title": "物联网工程师-飞尔特能源",
+      "job_category": "技术研发",
+      "ai_total": 45.8,
+      "hr_total": 50.1,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M042",
+      "resume_name": "郑凯文(物联网工程)",
+      "job_title": "电子工程师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 30.0,
+      "hr_total": 24.8,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M043",
+      "resume_name": "郑凯文(物联网工程)",
+      "job_title": "技术方案工程师-天俱时",
+      "job_category": "技术服务",
+      "ai_total": 24.4,
+      "hr_total": 30.6,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M044",
+      "resume_name": "郑凯文(物联网工程)",
+      "job_title": "数据开发-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 26.6,
+      "hr_total": 29.9,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M045",
+      "resume_name": "林小凡(电子商务)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 23.8,
+      "hr_total": 30.6,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M046",
+      "resume_name": "林小凡(电子商务)",
+      "job_title": "市场策划专员-金意陶陶瓷",
+      "job_category": "市场营销",
+      "ai_total": 26.6,
+      "hr_total": 31.8,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M047",
+      "resume_name": "林小凡(电子商务)",
+      "job_title": "电子工程师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 23.4,
+      "hr_total": 25.9,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M048",
+      "resume_name": "林小凡(电子商务)",
+      "job_title": "图像算法工程师(AI)-明锐理想",
+      "job_category": "技术研发",
+      "ai_total": 24.2,
+      "hr_total": 24.2,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M049",
+      "resume_name": "徐鹏飞(电气工程及其自动化)",
+      "job_title": "技术方案工程师-天俱时",
+      "job_category": "技术服务",
+      "ai_total": 26.2,
+      "hr_total": 26.0,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M050",
+      "resume_name": "徐鹏飞(电气工程及其自动化)",
+      "job_title": "工艺助理工程师-意拉德电子",
+      "job_category": "技术运维",
+      "ai_total": 9.4,
+      "hr_total": 5.0,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M051",
+      "resume_name": "徐鹏飞(电气工程及其自动化)",
+      "job_title": "后端开发工程师(C#)-长陆自动化",
+      "job_category": "技术开发",
+      "ai_total": 10.0,
+      "hr_total": 4.6,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M052",
+      "resume_name": "徐鹏飞(电气工程及其自动化)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 24.2,
+      "hr_total": 23.9,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M053",
+      "resume_name": "何雨萱(英语(商务方向))",
+      "job_title": "海外销售工程师-意拉德电子",
+      "job_category": "市场营销",
+      "ai_total": 44.0,
+      "hr_total": 52.8,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M054",
+      "resume_name": "何雨萱(英语(商务方向))",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 23.0,
+      "hr_total": 22.2,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M055",
+      "resume_name": "何雨萱(英语(商务方向))",
+      "job_title": "HR专员-慧通(广西)",
+      "job_category": "人力资源",
+      "ai_total": 30.6,
+      "hr_total": 24.0,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M056",
+      "resume_name": "何雨萱(英语(商务方向))",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 7.4,
+      "hr_total": 5.2,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M057",
+      "resume_name": "马志强(数据科学与大数据技术)",
+      "job_title": "数据开发-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 70.2,
+      "hr_total": 65.0,
+      "hr_label": 4
+    },
+    {
+      "record_id": "M058",
+      "resume_name": "马志强(数据科学与大数据技术)",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 45.6,
+      "hr_total": 46.3,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M059",
+      "resume_name": "马志强(数据科学与大数据技术)",
+      "job_title": "人工智能算法工程师-金意陶陶瓷",
+      "job_category": "技术研发",
+      "ai_total": 50.2,
+      "hr_total": 44.4,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M060",
+      "resume_name": "马志强(数据科学与大数据技术)",
+      "job_title": "电子工程师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 7.4,
+      "hr_total": 5.7,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M061",
+      "resume_name": "罗晓晴(纺织工程)",
+      "job_title": "管培生(采购方向)-外瓯裔贸易",
+      "job_category": "供应链",
+      "ai_total": 10.2,
+      "hr_total": 5.5,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M062",
+      "resume_name": "罗晓晴(纺织工程)",
+      "job_title": "工艺助理工程师-意拉德电子",
+      "job_category": "技术运维",
+      "ai_total": 5.2,
+      "hr_total": 7.4,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M063",
+      "resume_name": "罗晓晴(纺织工程)",
+      "job_title": "电子工程师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 8.8,
+      "hr_total": 5.0,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M064",
+      "resume_name": "罗晓晴(纺织工程)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 24.4,
+      "hr_total": 25.5,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M065",
+      "resume_name": "谢博文(通信工程)",
+      "job_title": "软件服务工程师-华讯网络",
+      "job_category": "技术服务",
+      "ai_total": 11.2,
+      "hr_total": 8.9,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M066",
+      "resume_name": "谢博文(通信工程)",
+      "job_title": "技术方案工程师-天俱时",
+      "job_category": "技术服务",
+      "ai_total": 6.2,
+      "hr_total": 8.4,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M067",
+      "resume_name": "谢博文(通信工程)",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 7.8,
+      "hr_total": 8.7,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M068",
+      "resume_name": "谢博文(通信工程)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 25.0,
+      "hr_total": 25.9,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M069",
+      "resume_name": "唐佳怡(工商管理)",
+      "job_title": "职能管培生-掌上先机",
+      "job_category": "管理培训",
+      "ai_total": 5.2,
+      "hr_total": 6.4,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M070",
+      "resume_name": "唐佳怡(工商管理)",
+      "job_title": "中国工商银行深圳市分行2026春招",
+      "job_category": "银行金融",
+      "ai_total": 12.4,
+      "hr_total": 5.9,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M071",
+      "resume_name": "唐佳怡(工商管理)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 26.4,
+      "hr_total": 23.9,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M072",
+      "resume_name": "唐佳怡(工商管理)",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 7.0,
+      "hr_total": 7.5,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M073",
+      "resume_name": "冯子豪(化学工程与工艺)",
+      "job_title": "设备助理工程师-意拉德电子",
+      "job_category": "技术运维",
+      "ai_total": 12.6,
+      "hr_total": 7.1,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M074",
+      "resume_name": "冯子豪(化学工程与工艺)",
+      "job_title": "管培生(采购方向)-外瓯裔贸易",
+      "job_category": "供应链",
+      "ai_total": 5.2,
+      "hr_total": 5.4,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M075",
+      "resume_name": "冯子豪(化学工程与工艺)",
+      "job_title": "电子工程师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 11.6,
+      "hr_total": 4.7,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M076",
+      "resume_name": "冯子豪(化学工程与工艺)",
+      "job_title": "职能管培生-掌上先机",
+      "job_category": "管理培训",
+      "ai_total": 9.0,
+      "hr_total": 6.2,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M077",
+      "resume_name": "曹雪莹(法学)",
+      "job_title": "职能管培生-掌上先机",
+      "job_category": "管理培训",
+      "ai_total": 13.6,
+      "hr_total": 7.2,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M078",
+      "resume_name": "曹雪莹(法学)",
+      "job_title": "HR专员-慧通(广西)",
+      "job_category": "人力资源",
+      "ai_total": 9.0,
+      "hr_total": 6.1,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M079",
+      "resume_name": "曹雪莹(法学)",
+      "job_title": "财务专员-理想汽车",
+      "job_category": "财务金融",
+      "ai_total": 10.6,
+      "hr_total": 6.1,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M080",
+      "resume_name": "曹雪莹(法学)",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 11.2,
+      "hr_total": 5.6,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M081",
+      "resume_name": "许天宇(自动化)",
+      "job_title": "工艺助理工程师-意拉德电子",
+      "job_category": "技术运维",
+      "ai_total": 25.4,
+      "hr_total": 24.9,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M082",
+      "resume_name": "许天宇(自动化)",
+      "job_title": "自动化机械设计师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 65.0,
+      "hr_total": 63.4,
+      "hr_label": 4
+    },
+    {
+      "record_id": "M083",
+      "resume_name": "许天宇(自动化)",
+      "job_title": "后端开发工程师(C#)-长陆自动化",
+      "job_category": "技术开发",
+      "ai_total": 24.4,
+      "hr_total": 23.0,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M084",
+      "resume_name": "许天宇(自动化)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 23.4,
+      "hr_total": 24.9,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M085",
+      "resume_name": "邓思琪(应用数学)",
+      "job_title": "数据开发-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 49.8,
+      "hr_total": 43.0,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M086",
+      "resume_name": "邓思琪(应用数学)",
+      "job_title": "人工智能算法工程师-金意陶陶瓷",
+      "job_category": "技术研发",
+      "ai_total": 47.2,
+      "hr_total": 42.3,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M087",
+      "resume_name": "邓思琪(应用数学)",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 67.0,
+      "hr_total": 64.0,
+      "hr_label": 4
+    },
+    {
+      "record_id": "M088",
+      "resume_name": "邓思琪(应用数学)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 24.6,
+      "hr_total": 25.3,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M089",
+      "resume_name": "彭浩东(车辆工程)",
+      "job_title": "自动化机械设计师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 7.2,
+      "hr_total": 7.5,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M090",
+      "resume_name": "彭浩东(车辆工程)",
+      "job_title": "工艺助理工程师-意拉德电子",
+      "job_category": "技术运维",
+      "ai_total": 8.4,
+      "hr_total": 6.1,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M091",
+      "resume_name": "彭浩东(车辆工程)",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 7.6,
+      "hr_total": 5.8,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M092",
+      "resume_name": "彭浩东(车辆工程)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 24.0,
+      "hr_total": 27.0,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M093",
+      "resume_name": "蔡文静(应用心理学)",
+      "job_title": "HR专员-慧通(广西)",
+      "job_category": "人力资源",
+      "ai_total": 27.8,
+      "hr_total": 25.9,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M094",
+      "resume_name": "蔡文静(应用心理学)",
+      "job_title": "职能管培生-掌上先机",
+      "job_category": "管理培训",
+      "ai_total": 23.2,
+      "hr_total": 21.6,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M095",
+      "resume_name": "蔡文静(应用心理学)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 45.6,
+      "hr_total": 43.1,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M096",
+      "resume_name": "蔡文静(应用心理学)",
+      "job_title": "软件工程师-明锐理想(C++)",
+      "job_category": "硬件研发",
+      "ai_total": 11.2,
+      "hr_total": 6.0,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M097",
+      "resume_name": "袁泽楷(网络工程)",
+      "job_title": "信息安全工程师-中建一局",
+      "job_category": "技术研发",
+      "ai_total": 25.0,
+      "hr_total": 29.4,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M098",
+      "resume_name": "袁泽楷(网络工程)",
+      "job_title": "软件服务工程师-华讯网络",
+      "job_category": "技术服务",
+      "ai_total": 43.4,
+      "hr_total": 42.5,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M099",
+      "resume_name": "袁泽楷(网络工程)",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 44.2,
+      "hr_total": 45.7,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M100",
+      "resume_name": "袁泽楷(网络工程)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 25.8,
+      "hr_total": 24.5,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M101",
+      "resume_name": "蒋梦瑶(工业设计)",
+      "job_title": "市场策划专员-金意陶陶瓷",
+      "job_category": "市场营销",
+      "ai_total": 25.2,
+      "hr_total": 24.0,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M102",
+      "resume_name": "蒋梦瑶(工业设计)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 23.4,
+      "hr_total": 23.4,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M103",
+      "resume_name": "蒋梦瑶(工业设计)",
+      "job_title": "电子工程师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 11.4,
+      "hr_total": 7.8,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M104",
+      "resume_name": "蒋梦瑶(工业设计)",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 9.8,
+      "hr_total": 4.7,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M105",
+      "resume_name": "钱嘉诚(材料科学与工程)",
+      "job_title": "设备助理工程师-意拉德电子",
+      "job_category": "技术运维",
+      "ai_total": 8.8,
+      "hr_total": 4.4,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M106",
+      "resume_name": "钱嘉诚(材料科学与工程)",
+      "job_title": "管培生(采购方向)-外瓯裔贸易",
+      "job_category": "供应链",
+      "ai_total": 9.0,
+      "hr_total": 5.7,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M107",
+      "resume_name": "钱嘉诚(材料科学与工程)",
+      "job_title": "电子工程师-富士康",
+      "job_category": "硬件研发",
+      "ai_total": 7.6,
+      "hr_total": 12.8,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M108",
+      "resume_name": "钱嘉诚(材料科学与工程)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 12.2,
+      "hr_total": 14.2,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M109",
+      "resume_name": "韩雪琳(信息管理与信息系统)",
+      "job_title": "后端开发工程师(C#)-长陆自动化",
+      "job_category": "技术开发",
+      "ai_total": 27.8,
+      "hr_total": 25.8,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M110",
+      "resume_name": "韩雪琳(信息管理与信息系统)",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 45.0,
+      "hr_total": 46.6,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M111",
+      "resume_name": "韩雪琳(信息管理与信息系统)",
+      "job_title": "职能管培生-掌上先机",
+      "job_category": "管理培训",
+      "ai_total": 9.4,
+      "hr_total": 7.2,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M112",
+      "resume_name": "韩雪琳(信息管理与信息系统)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 26.0,
+      "hr_total": 24.0,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M113",
+      "resume_name": "杨晨曦(环境工程)",
+      "job_title": "技术方案工程师-天俱时",
+      "job_category": "技术服务",
+      "ai_total": 9.6,
+      "hr_total": 6.1,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M114",
+      "resume_name": "杨晨曦(环境工程)",
+      "job_title": "管培生(采购方向)-外瓯裔贸易",
+      "job_category": "供应链",
+      "ai_total": 7.8,
+      "hr_total": 5.5,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M115",
+      "resume_name": "杨晨曦(环境工程)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 8.8,
+      "hr_total": 13.8,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M116",
+      "resume_name": "杨晨曦(环境工程)",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 8.6,
+      "hr_total": 6.0,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M117",
+      "resume_name": "吕欣怡(物流管理)",
+      "job_title": "销售管培生-长陆自动化",
+      "job_category": "市场营销",
+      "ai_total": 49.2,
+      "hr_total": 47.0,
+      "hr_label": 3
+    },
+    {
+      "record_id": "M118",
+      "resume_name": "吕欣怡(物流管理)",
+      "job_title": "销售管培生-掌上先机",
+      "job_category": "市场营销",
+      "ai_total": 25.2,
+      "hr_total": 23.8,
+      "hr_label": 2
+    },
+    {
+      "record_id": "M119",
+      "resume_name": "吕欣怡(物流管理)",
+      "job_title": "数据开发-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 9.0,
+      "hr_total": 6.1,
+      "hr_label": 1
+    },
+    {
+      "record_id": "M120",
+      "resume_name": "吕欣怡(物流管理)",
+      "job_title": "后端开发工程师-掌上先机",
+      "job_category": "技术开发",
+      "ai_total": 9.0,
+      "hr_total": 5.7,
+      "hr_label": 1
+    }
+  ],
+  "per_category": {
+    "技术开发": {
+      "count": 23,
+      "exact_match": 23,
+      "within1": 23,
+      "exact_rate": 100.0,
+      "within1_rate": 100.0,
+      "mae": 2.5
+    },
+    "技术研发": {
+      "count": 11,
+      "exact_match": 11,
+      "within1": 11,
+      "exact_rate": 100.0,
+      "within1_rate": 100.0,
+      "mae": 3.7
+    },
+    "教育培训": {
+      "count": 4,
+      "exact_match": 4,
+      "within1": 4,
+      "exact_rate": 100.0,
+      "within1_rate": 100.0,
+      "mae": 3.1
+    },
+    "硬件研发": {
+      "count": 21,
+      "exact_match": 21,
+      "within1": 21,
+      "exact_rate": 100.0,
+      "within1_rate": 100.0,
+      "mae": 3.3
+    },
+    "市场营销": {
+      "count": 25,
+      "exact_match": 25,
+      "within1": 25,
+      "exact_rate": 100.0,
+      "within1_rate": 100.0,
+      "mae": 2.2
+    },
+    "财务金融": {
+      "count": 5,
+      "exact_match": 5,
+      "within1": 5,
+      "exact_rate": 100.0,
+      "within1_rate": 100.0,
+      "mae": 5.7
+    },
+    "人力资源": {
+      "count": 5,
+      "exact_match": 5,
+      "within1": 5,
+      "exact_rate": 100.0,
+      "within1_rate": 100.0,
+      "mae": 3.2
+    },
+    "银行金融": {
+      "count": 2,
+      "exact_match": 2,
+      "within1": 2,
+      "exact_rate": 100.0,
+      "within1_rate": 100.0,
+      "mae": 4.2
+    },
+    "技术服务": {
+      "count": 7,
+      "exact_match": 7,
+      "within1": 7,
+      "exact_rate": 100.0,
+      "within1_rate": 100.0,
+      "mae": 2.3
+    },
+    "行政后勤": {
+      "count": 2,
+      "exact_match": 2,
+      "within1": 2,
+      "exact_rate": 100.0,
+      "within1_rate": 100.0,
+      "mae": 1.2
+    },
+    "技术运维": {
+      "count": 6,
+      "exact_match": 6,
+      "within1": 6,
+      "exact_rate": 100.0,
+      "within1_rate": 100.0,
+      "mae": 3.2
+    },
+    "供应链": {
+      "count": 4,
+      "exact_match": 4,
+      "within1": 4,
+      "exact_rate": 100.0,
+      "within1_rate": 100.0,
+      "mae": 2.6
+    },
+    "管理培训": {
+      "count": 5,
+      "exact_match": 5,
+      "within1": 5,
+      "exact_rate": 100.0,
+      "within1_rate": 100.0,
+      "mae": 2.8
+    }
+  }
+}

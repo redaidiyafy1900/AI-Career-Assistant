@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网络诊断工具</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .card { background: white; border-radius: 8px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #2563eb; margin-bottom: 20px; }
+        h2 { color: #1e293b; margin-bottom: 16px; font-size: 18px; margin-top: 24px; }
+        .btn {
+            background: #2563eb; color: white; border: none; padding: 12px 24px;
+            border-radius: 6px; cursor: pointer; font-size: 16px; margin-right: 10px;
+            transition: background 0.2s;
+        }
+        .btn:hover { background: #1d4ed8; }
+        .btn:disabled { background: #94a3b8; cursor: not-allowed; }
+        .status-item {
+            display: flex; align-items: center; padding: 12px;
+            background: #f8fafc; border-radius: 6px; margin-bottom: 8px;
+        }
+        .status-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+            margin-right: 12px; flex-shrink: 0;
+        }
+        .status-dot.pending { background: #94a3b8; }
+        .status-dot.success { background: #22c55e; }
+        .status-dot.error { background: #ef4444; }
+        .status-dot.warning { background: #f59e0b; }
+        .status-text { flex: 1; font-size: 14px; }
+        .status-detail { font-size: 12px; color: #64748b; margin-top: 4px; }
+        .log { background: #1e293b; color: #10b981; padding: 16px; border-radius: 6px;
+               font-family: 'Courier New', monospace; font-size: 13px; white-space: pre-wrap;
+               max-height: 400px; overflow-y: auto; }
+        .suggestion {
+            background: #dbeafe; border-left: 4px solid #2563eb;
+            padding: 12px; border-radius: 4px; margin: 12px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>🔍 网络诊断工具</h1>
+            <p style="color: #64748b; margin-bottom: 24px;">诊断面试功能的网络连接问题</p>
+
+            <button id="diagnoseBtn" class="btn" onclick="runDiagnosis()">🚀 开始诊断</button>
+            <button class="btn" style="background: #64748b;" onclick="clearResults()">🗑️ 清空结果</button>
+
+            <div id="results" style="margin-top: 24px; display: none;">
+                <h2>诊断结果</h2>
+                <div id="statusList"></div>
+
+                <div class="suggestion" id="suggestion" style="display: none;"></div>
+
+                <h2>详细日志</h2>
+                <div id="log" class="log">等待诊断...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const statusList = document.getElementById('statusList');
+        const logDiv = document.getElementById('log');
+        const suggestionDiv = document.getElementById('suggestion');
+        let diagnosisResults = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                info: '#10b981',
+                success: '#22c55e',
+                error: '#ef4444',
+                warn: '#f59e0b'
+            };
+            const line = `[${timestamp}] ${message}\n`;
+            logDiv.innerHTML += line;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearResults() {
+            document.getElementById('results').style.display = 'none';
+            statusList.innerHTML = '';
+            logDiv.innerHTML = '等待诊断...';
+            suggestionDiv.style.display = 'none';
+            diagnosisResults = [];
+        }
+
+        function addStatus(name, status, detail = '') {
+            diagnosisResults.push({ name, status, detail });
+            statusList.innerHTML += `
+                <div class="status-item">
+                    <div class="status-dot ${status}"></div>
+                    <div class="status-text">
+                        <div>${name}</div>
+                        ${detail ? `<div class="status-detail">${detail}</div>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        async function runDiagnosis() {
+            const diagnoseBtn = document.getElementById('diagnoseBtn');
+            diagnoseBtn.disabled = true;
+            diagnoseBtn.textContent = '⏳ 诊断中...';
+
+            clearResults();
+            document.getElementById('results').style.display = 'block';
+
+            log('开始诊断...', 'info');
+
+            // 1. 检查浏览器支持
+            log('检查浏览器特性...', 'info');
+            try {
+                if (typeof fetch === 'function') {
+                    addStatus('Fetch API', 'success', '支持');
+                    log('✓ Fetch API 可用', 'success');
+                } else {
+                    addStatus('Fetch API', 'error', '不支持');
+                    log('✗ Fetch API 不可用', 'error');
+                }
+
+                if (typeof AbortController === 'function') {
+                    addStatus('AbortController', 'success', '支持');
+                    log('✓ AbortController 可用', 'success');
+                } else {
+                    addStatus('AbortController', 'error', '不支持');
+                    log('✗ AbortController 不可用', 'error');
+                }
+            } catch (e) {
+                addStatus('浏览器检查', 'error', e.message);
+                log(`✗ 浏览器检查失败: ${e.message}`, 'error');
+            }
+
+            // 2. 检查网络连接
+            log('检查网络连接...', 'info');
+            try {
+                const response = await fetch('https://www.baidu.com', {
+                    mode: 'no-cors',
+                    cache: 'no-cache'
+                });
+                addStatus('网络连接', 'success', '外网连接正常');
+                log('✓ 网络连接正常', 'success');
+            } catch (e) {
+                addStatus('网络连接', 'error', '网络连接失败');
+                log(`✗ 网络连接失败: ${e.message}`, 'error');
+            }
+
+            // 3. 检查本地服务器
+            log('检查本地服务器...', 'info');
+            try {
+                const response = await fetch('/api/health', { method: 'GET' });
+                if (response.ok) {
+                    const data = await response.json();
+                    addStatus('本地服务器', 'success', `端口 ${data.port}, 版本 ${data.version}`);
+                    log(`✓ 本地服务器运行正常`, 'success');
+                    log(`  端口: ${data.port}`, 'info');
+                    log(`  版本: ${data.version}`, 'info');
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (e) {
+                addStatus('本地服务器', 'error', '连接失败');
+                log(`✗ 本地服务器连接失败: ${e.message}`, 'error');
+            }
+
+            // 4. 测试API响应时间
+            log('测试API响应时间...', 'info');
+            const responseTimes = [];
+            for (let i = 0; i < 3; i++) {
+                try {
+                    const start = Date.now();
+                    const response = await fetch('/api/health', { method: 'GET' });
+                    const end = Date.now();
+                    const responseTime = end - start;
+                    responseTimes.push(responseTime);
+                    log(`测试 ${i + 1}: ${responseTime}ms`, 'info');
+                } catch (e) {
+                    log(`测试 ${i + 1} 失败: ${e.message}`, 'error');
+                }
+            }
+
+            if (responseTimes.length > 0) {
+                const avgTime = Math.round(responseTimes.reduce((a, b) => a + b) / responseTimes.length);
+                addStatus('API响应时间', avgTime < 100 ? 'success' : 'warning', `平均 ${avgTime}ms`);
+                log(`✓ 平均响应时间: ${avgTime}ms`, avgTime < 100 ? 'success' : 'warn');
+            } else {
+                addStatus('API响应时间', 'error', '测试失败');
+            }
+
+            // 5. 测试超时设置
+            log('测试超时机制...', 'info');
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5秒后中止
+
+                try {
+                    await new Promise((resolve, reject) => {
+                        setTimeout(() => resolve('test'), 3000); // 3秒后完成
+                    });
+
+                    clearTimeout(timeoutId);
+                    addStatus('超时机制', 'success', '工作正常');
+                    log('✓ 超时机制工作正常', 'success');
+                } catch (e) {
+                    if (e.name === 'AbortError') {
+                        addStatus('超时机制', 'success', 'Abort工作正常');
+                        log('✓ AbortController 工作正常', 'success');
+                    } else {
+                        throw e;
+                    }
+                }
+            } catch (e) {
+                addStatus('超时机制', 'error', e.message);
+                log(`✗ 超时机制测试失败: ${e.message}`, 'error');
+            }
+
+            // 6. 检查并发请求
+            log('测试并发请求...', 'info');
+            try {
+                const startTime = Date.now();
+                const promises = [
+                    fetch('/api/health'),
+                    fetch('/api/health'),
+                    fetch('/api/health')
+                ];
+                const responses = await Promise.all(promises);
+                const endTime = Date.now();
+
+                if (responses.every(r => r.ok)) {
+                    addStatus('并发请求', 'success', '3个请求全部成功');
+                    log(`✓ 并发请求测试通过，耗时 ${endTime - startTime}ms`, 'success');
+                } else {
+                    throw new Error('部分请求失败');
+                }
+            } catch (e) {
+                addStatus('并发请求', 'error', e.message);
+                log(`✗ 并发请求测试失败: ${e.message}`, 'error');
+            }
+
+            // 生成建议
+            generateSuggestions();
+
+            diagnoseBtn.disabled = false;
+            diagnoseBtn.textContent = '🚀 开始诊断';
+            log('\n诊断完成！', 'success');
+        }
+
+        function generateSuggestions() {
+            const errors = diagnosisResults.filter(r => r.status === 'error' || r.status === 'warning');
+
+            if (errors.length === 0) {
+                suggestionDiv.style.display = 'block';
+                suggestionDiv.innerHTML = '<strong>✅ 一切正常！</strong><br>您的网络和服务器配置都正常，可以正常使用面试功能。';
+                return;
+            }
+
+            const suggestions = [];
+
+            const networkError = errors.find(r => r.name.includes('网络'));
+            if (networkError) {
+                suggestions.push('1. 检查网络连接，确保可以访问外网');
+                suggestions.push('2. 检查防火墙设置，确保允许本地端口访问');
+            }
+
+            const serverError = errors.find(r => r.name.includes('服务器'));
+            if (serverError) {
+                suggestions.push('3. 确保后端服务器正在运行：');
+                suggestions.push('   - 执行: python server.py');
+                suggestions.push('   - 或双击: start.bat');
+                suggestions.push('4. 检查端口3002是否被占用');
+            }
+
+            const apiError = errors.find(r => r.name.includes('API'));
+            if (apiError) {
+                suggestions.push('5. 检查FastGPT服务是否正常运行');
+                suggestions.push('6. 验证API Key配置是否正确');
+            }
+
+            const timeoutError = errors.find(r => r.name.includes('超时'));
+            if (timeoutError) {
+                suggestions.push('7. 如果仍然超时，可以尝试：');
+                suggestions.push('   - 简化问题内容');
+                suggestions.push('   - 检查FastGPT服务响应速度');
+                suggestions.push('   - 增加后端超时时间（当前180秒）');
+            }
+
+            if (suggestions.length > 0) {
+                suggestionDiv.style.display = 'block';
+                suggestionDiv.innerHTML = `
+                    <strong>💡 解决建议：</strong><br>
+                    <div style="margin-top: 8px; line-height: 1.8;">${suggestions.join('<br>')}</div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

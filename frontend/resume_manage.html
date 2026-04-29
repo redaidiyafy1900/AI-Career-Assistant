@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>简历管理 - 智能职业发展助手</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+        :root {
+            --primary: #2C7BE5; --primary-dark: #1E40AF; --primary-light: #3B82F6;
+            --bg-primary: #F5F9FC; --bg-secondary: #FFFFFF;
+            --text-primary: #1A365D; --text-secondary: #6B7280; --text-muted: #9CA3AF;
+            --border: #E5E7EB; --success-bg: #E6F7E6; --success-text: #166534;
+            --danger-bg: #FCE8E6; --danger-text: #991B1B;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --shadow: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08); --radius: 8px;
+        }
+        body { background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        .navbar { background: var(--bg-secondary); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+        .navbar-content { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; max-width: 1200px; margin: 0 auto; }
+        .navbar-brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--text-primary); text-decoration: none; }
+        .brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; }
+        .navbar-back { color: var(--primary); text-decoration: none; font-size: 14px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+        .page-header { margin-bottom: 32px; }
+        .step-nav { background: white; border-bottom: 1px solid var(--border); padding: 8px 24px; }
+        .step-nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 0; flex-wrap: wrap; width: 100%; box-sizing: border-box; }
+        .step-link { font-size: 12px; padding: 4px 10px; border-radius: 20px; color: var(--text-secondary); text-decoration: none; white-space: nowrap; transition: all 0.2s; }
+        .step-link:hover { color: var(--primary); background: #EFF6FF; }
+        .step-link.active { background: var(--primary); color: white; font-weight: 600; }
+        .step-arrow { color: var(--text-muted); font-size: 11px; margin: 0 1px; }
+        .step-nav-btns { margin-left: auto; display: flex; gap: 8px; }
+        .btn-step { font-size: 12px; padding: 4px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: white; color: var(--text-secondary); cursor: pointer; text-decoration: none; transition: all 0.2s; }
+        .btn-step:hover { border-color: var(--primary); color: var(--primary); }
+        .page-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .page-subtitle { font-size: 15px; color: var(--text-secondary); }
+        .card { background: white; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 24px; margin-bottom: 24px; }
+        .card-title { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; }
+        .btn { padding: 10px 24px; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; text-decoration: none; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-primary:disabled { background: #93c5fd; cursor: not-allowed; }
+        .btn-secondary { background: white; color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-danger { background: #EF4444; color: white; }
+        .btn-sm { padding: 6px 14px; font-size: 13px; }
+        .upload-area { border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .upload-area:hover, .upload-area.drag-over { border-color: var(--primary); background: #EFF6FF; }
+        .upload-icon { font-size: 48px; margin-bottom: 12px; }
+        .upload-text { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+        .upload-hint { font-size: 13px; color: var(--text-muted); }
+        .resume-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .resume-card { background: white; border: 2px solid var(--border); border-radius: var(--radius); padding: 20px; transition: all 0.2s; position: relative; }
+        .resume-card.primary { border-color: var(--primary); background: #EFF6FF; }
+        .resume-card:hover { box-shadow: var(--shadow-md); }
+        .resume-card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+        .resume-icon { width: 44px; height: 44px; background: #EFF6FF; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+        .resume-name { font-size: 15px; font-weight: 600; color: var(--text-primary); word-break: break-all; }
+        .resume-meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+        .primary-badge { position: absolute; top: 12px; right: 12px; background: var(--primary); color: white; font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 600; }
+        .resume-parsed { margin-bottom: 12px; }
+        .parsed-item { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
+        .parsed-skills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .skill-tag { background: #EFF6FF; color: var(--primary); padding: 2px 8px; border-radius: 12px; font-size: 12px; }
+        .resume-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .alert { padding: 12px 16px; border-radius: var(--radius); font-size: 14px; margin-bottom: 16px; }
+        .alert-success { background: var(--success-bg); color: var(--success-text); }
+        .alert-error { background: var(--danger-bg); color: var(--danger-text); }
+        .alert-info { background: #EFF6FF; color: #1d4ed8; }
+        .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+        .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+        #fileInput { display: none; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: white; border-radius: 12px; padding: 24px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; }
+        .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+        .json-view { background: var(--bg-primary); border-radius: var(--radius); padding: 16px; font-size: 13px; font-family: monospace; white-space: pre-wrap; overflow-x: auto; max-height: 400px; overflow-y: auto; }
+        .hidden { display: none !important; }
+
+        /* 响应式设计 */
+        @media (max-width: 1280px) {
+            .container,
+            .navbar-content,
+            .step-nav-inner {
+                max-width: 1100px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .container,
+            .navbar-content,
+            .step-nav-inner {
+                max-width: 960px;
+                padding: 0 20px;
+            }
+            .container {
+                padding: 28px 20px;
+            }
+            .resume-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container,
+            .navbar-content,
+            .step-nav-inner {
+                max-width: 100%;
+                padding: 0 16px;
+            }
+            .container {
+                padding: 24px 16px;
+            }
+            .page-title {
+                font-size: 24px;
+            }
+            .upload-area {
+                padding: 32px 20px;
+            }
+            .upload-icon {
+                font-size: 40px;
+            }
+            .upload-text {
+                font-size: 14px;
+            }
+            .resume-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container,
+            .navbar-content,
+            .step-nav-inner {
+                padding: 0 12px;
+            }
+            .container {
+                padding: 20px 12px;
+            }
+            .page-title {
+                font-size: 20px;
+            }
+            .upload-area {
+                padding: 24px 16px;
+            }
+            .card {
+                padding: 20px 16px;
+            }
+            .resume-card {
+                padding: 16px;
+            }
+            .resume-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+            .resume-name {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="navbar-content">
+        <a href="/" class="navbar-brand"><div class="brand-icon">智</div>智能职业发展助手</a>
+        <a href="/" class="navbar-back">← 返回首页</a>
+    </div>
+</nav>
+<div class="step-nav"><div class="step-nav-inner">
+  <a href="job_scraper.html" class="step-link">1 岗位采集</a><span class="step-arrow">›</span>
+  <a href="resume_manage.html" class="step-link active">2 简历管理</a><span class="step-arrow">›</span>
+  <a href="job_match.html" class="step-link">3 岗位匹配</a><span class="step-arrow">›</span>
+  <a href="resume_optimize.html" class="step-link">4 简历优化</a><span class="step-arrow">›</span>
+  <a href="auto_apply.html" class="step-link">5 自动投递</a><span class="step-arrow">›</span>
+  <a href="interview_coach.html" class="step-link">6 模拟面试</a>
+  <div class="step-nav-btns"><a href="job_scraper.html" class="btn-step">‹ 上一步</a><a href="job_match.html" class="btn-step">下一步 ›</a></div>
+:</div></div>
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">📄 简历管理</h1>
+        <p class="page-subtitle">上传并管理您的简历，AI 自动解析结构化信息</p>
+    </div>
+
+    <!-- 上传区域 -->
+    <div class="card">
+        <div class="card-title">📤 上传简历</div>
+        <div id="uploadAlert" class="hidden"></div>
+        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()"
+             ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+            <div class="upload-icon">📎</div>
+            <div class="upload-text">点击上传或拖拽简历到此处</div>
+            <div class="upload-hint">支持 PDF、DOC、DOCX 格式，最大 10MB</div>
+        </div>
+        <input type="file" id="fileInput" accept=".pdf,.doc,.docx" onchange="handleFileSelect(event)">
+        
+        <!-- 头像上传区域（必填） -->
+        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="flex: 1;">
+                    <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">
+                        📷 上传头像<span style="color:#EF4444;"> * （必填，用于生成精美简历）</span>
+                    </div>
+                    <div class="upload-area" id="avatarUploadArea" onclick="document.getElementById('avatarInput').click()"
+                         ondragover="handleAvatarDragOver(event)" ondragleave="handleAvatarDragLeave(event)" ondrop="handleAvatarDrop(event)"
+                         style="padding: 20px; border-color: #EF4444; background: #FEF2F2;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div id="avatarPreview" style="width: 60px; height: 60px; border-radius: 50%; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; font-size: 24px; overflow: hidden; border: 2px dashed #EF4444;">
+                                📷
+                            </div>
+                            <div style="text-align: left;">
+                                <div style="font-size: 14px; font-weight: 500; color: var(--text-primary);">点击上传头像照片（必填）</div>
+                                <div style="font-size: 12px; color: var(--text-muted);">支持 JPG、PNG、GIF 格式 · 上传简历前请先选择头像</div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="file" id="avatarInput" accept=".jpg,.jpeg,.png,.gif,.webp" onchange="handleAvatarSelect(event)" style="display: none;">
+                </div>
+                <button id="clearAvatarBtn" class="btn btn-secondary btn-sm hidden" onclick="clearAvatar()" style="align-self: flex-start;">
+                    🗑️ 清除头像
+                </button>
+            </div>
+        </div>
+        
+        <div id="uploadProgress" class="hidden" style="margin-top:16px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div class="spinner" style="border-color:rgba(44,123,229,0.3);border-top-color:var(--primary);"></div>
+                <span id="uploadProgressText" style="font-size:14px;color:var(--text-secondary);">上传并解析中...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 简历列表 -->
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <div class="card-title" style="margin:0;">📋 我的简历</div>
+            <button class="btn btn-secondary btn-sm" onclick="loadResumes()">🔄 刷新</button>
+        </div>
+        <div id="resumeContainer">
+            <div class="empty-state"><div class="icon">📄</div><p>暂无简历</p><p style="font-size:13px;">请上传您的简历文件</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- 详情弹窗 -->
+<div class="modal-overlay" id="detailModal" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-title" id="modalTitle">简历详情</div>
+        <div class="json-view" id="modalContent"></div>
+        <div style="margin-top:16px;text-align:right;"><button class="btn btn-secondary" onclick="closeModal()">关闭</button></div>
+    </div>
+</div>
+
+<script>
+// 头像相关变量
+let selectedAvatarFile = null;
+
+async function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (file) await uploadFile(file);
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('uploadArea').classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+    document.getElementById('uploadArea').classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('uploadArea').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) uploadFile(file);
+}
+
+// 头像相关处理函数
+function handleAvatarDragOver(e) {
+    e.preventDefault();
+    document.getElementById('avatarUploadArea').classList.add('drag-over');
+}
+
+function handleAvatarDragLeave(e) {
+    document.getElementById('avatarUploadArea').classList.remove('drag-over');
+}
+
+function handleAvatarDrop(e) {
+    e.preventDefault();
+    document.getElementById('avatarUploadArea').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) handleAvatarFile(file);
+}
+
+function handleAvatarSelect(e) {
+    const file = e.target.files[0];
+    if (file) handleAvatarFile(file);
+}
+
+function handleAvatarFile(file) {
+    const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowed.includes(file.type) && !file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+        showAlert('uploadAlert', 'error', '⚠️ 不支持的头像格式，请上传 JPG、PNG、GIF 格式');
+        return;
+    }
+    
+    selectedAvatarFile = file;
+    
+    // 显示预览
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const preview = document.getElementById('avatarPreview');
+        preview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+        preview.style.border = '2px solid var(--primary)';
+        // 头像区域恢复正常样式（绿色/正常）
+        const avatarArea = document.getElementById('avatarUploadArea');
+        avatarArea.style.borderColor = 'var(--primary)';
+        avatarArea.style.background = '#EFF6FF';
+    };
+    reader.readAsDataURL(file);
+    
+    // 显示清除按钮
+    document.getElementById('clearAvatarBtn').classList.remove('hidden');
+}
+
+function clearAvatar() {
+    selectedAvatarFile = null;
+    document.getElementById('avatarPreview').innerHTML = '📷';
+    document.getElementById('avatarInput').value = '';
+    document.getElementById('clearAvatarBtn').classList.add('hidden');
+    // 重置头像区域样式为必填状态（红色边框）
+    const avatarArea = document.getElementById('avatarUploadArea');
+    avatarArea.style.borderColor = '#EF4444';
+    avatarArea.style.background = '#FEF2F2';
+}
+
+async function uploadFile(file) {
+    const allowed = ['application/pdf', 'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowed.includes(file.type) && !file.name.match(/\.(pdf|doc|docx)$/i)) {
+        showAlert('uploadAlert', 'error', '⚠️ 不支持的文件格式，请上传 PDF/DOC/DOCX');
+        return;
+    }
+
+    // 强制要求上传头像
+    if (!selectedAvatarFile) {
+        showAlert('uploadAlert', 'error', '⚠️ 请先上传头像照片（必填），再上传简历文件');
+        // 高亮头像区域
+        const avatarArea = document.getElementById('avatarUploadArea');
+        avatarArea.style.borderColor = '#EF4444';
+        avatarArea.style.background = '#FCE8E6';
+        setTimeout(() => { avatarArea.scrollIntoView({behavior: 'smooth'}); }, 100);
+        return;
+    }
+
+    document.getElementById('uploadProgress').classList.remove('hidden');
+    document.getElementById('uploadProgressText').textContent = '上传中...';
+    document.getElementById('uploadAlert').classList.add('hidden');
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('parse', '1');
+    
+    // 添加头像文件
+    formData.append('avatar', selectedAvatarFile);
+
+    try {
+        document.getElementById('uploadProgressText').textContent = '正在解析简历（AI 分析中）...';
+        const res = await fetch('/api/resume/upload', {method: 'POST', body: formData});
+        const data = await res.json();
+        if (data.success) {
+            const avatarMsg = data.avatar_uploaded ? '（含头像）' : '';
+            const msg = data.parsed
+                ? `✅ 上传成功${avatarMsg}！AI 已解析简历：<b>${data.parsed_data?.name || file.name}</b>`
+                : `✅ 上传成功${avatarMsg}，简历解析可能失败（请检查 AI 配置）`;
+            showAlert('uploadAlert', 'success', msg);
+            // 上传成功后清除头像选择
+            clearAvatar();
+            loadResumes();
+        } else {
+            showAlert('uploadAlert', 'error', `❌ ${data.error}`);
+        }
+    } catch (e) {
+        showAlert('uploadAlert', 'error', `❌ 上传失败：${e.message}`);
+    } finally {
+        document.getElementById('uploadProgress').classList.add('hidden');
+        document.getElementById('fileInput').value = '';
+    }
+}
+
+function showAlert(id, type, msg) {
+    const el = document.getElementById(id);
+    el.className = `alert alert-${type}`;
+    el.innerHTML = msg;
+    el.classList.remove('hidden');
+}
+
+async function setPrimary(id) {
+    await fetch('/api/resume/set-primary', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({resume_id: id})
+    });
+    loadResumes();
+}
+
+async function deleteResume(id) {
+    if (!confirm('确定要删除这份简历吗？')) return;
+    await fetch('/api/resume/delete', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({resume_id: id})
+    });
+    loadResumes();
+}
+
+function viewDetail(resume) {
+    const parsed = resume.parsed_data;
+    document.getElementById('modalTitle').textContent = `简历详情：${parsed?.name || resume.file_name}`;
+    document.getElementById('modalContent').textContent = JSON.stringify(parsed || {}, null, 2);
+    document.getElementById('detailModal').classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('detailModal').classList.remove('active');
+}
+
+// 全局变量用于存储当前要上传头像的简历ID
+window.currentAvatarResumeId = null;
+
+async function loadResumes() {
+    const res = await fetch('/api/resume/list');
+    const data = await res.json();
+    if (!data.success) return;
+    const container = document.getElementById('resumeContainer');
+    
+    // 调试：打印每份简历的头像状态
+    console.log('[调试] 简历列表:', JSON.stringify(data.resumes.map(r => ({id: r.id, name: r.file_name, avatar_path: r.avatar_path}))));
+
+    // 添加隐藏的文件输入框（只在第一次添加）
+    if (!document.getElementById('resumeAvatarInput')) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.id = 'resumeAvatarInput';
+        input.accept = '.jpg,.jpeg,.png,.gif,.webp';
+        input.style.display = 'none';
+        input.addEventListener('change', handleResumeAvatarSelect);
+        document.body.appendChild(input);
+    }
+
+    if (!data.resumes.length) {
+        container.innerHTML = '<div class="empty-state"><div class="icon">📄</div><p>暂无简历</p><p style="font-size:13px;">请上传您的简历文件</p></div>';
+        return;
+    }
+    container.innerHTML = `<div class="resume-grid">${data.resumes.map(r => {
+        const p = r.parsed_data || {};
+        const isPrimary = r.is_primary;
+        const skills = (p.skills || []).slice(0, 6);
+        const hasAvatar = r.avatar_path && r.avatar_path.length > 0;
+        const avatarBtnText = hasAvatar ? '更换头像' : '上传头像';
+        // 头像预览
+        const avatarPreview = hasAvatar 
+            ? `<img src="${r.avatar_path}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" 
+                style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+               <div style="display:none;">📷</div>`
+            : `<span style="color:#EF4444;font-size:20px;">⚠️</span>`;
+        // 无头像时显示红色边框和警告样式
+        const cardStyle = hasAvatar ? '' : 'border-color:#EF4444;background:#FEF2F2;';
+        // 头像状态提示
+        const avatarStatusBadge = hasAvatar ? '<span style="color:#16A34A;font-size:12px;">(✅ 已传头像)</span>' : '<span style="color:#EF4444;font-size:12px;font-weight:600;">(❌ 缺少头像)</span>';
+        return `<div class="resume-card ${isPrimary ? 'primary' : ''}" id="resume-card-${r.id}" style="${cardStyle}">
+            ${isPrimary ? '<div class="primary-badge">主简历</div>' : ''}
+            ${!hasAvatar ? '<div style="position:absolute;top:12px;right:80px;background:#EF4444;color:white;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600;">缺少头像</div>' : ''}
+            <div class="resume-card-header">
+                <div class="resume-avatar-icon" style="width: 52px; height: 52px; border-radius: 50%; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; font-size: 24px; overflow: hidden; border: ${hasAvatar ? '2px solid var(--primary)' : '3px solid #EF4444'};">
+                    ${avatarPreview}
+                </div>
+                <div>
+                    <div class="resume-name">${p.name || r.file_name}</div>
+                    <div class="resume-meta">${r.file_type.toUpperCase()} · ${new Date(r.uploaded_at).toLocaleDateString('zh-CN')} ${avatarStatusBadge}</div>
+                    ${!hasAvatar ? '<div style="font-size:11px;color:#991B1B;margin-top:2px;">请点击下方「上传头像」按钮补充</div>' : ''}
+                </div>
+            </div>
+            ${p.name ? `<div class="resume-parsed">
+                ${p.education?.length ? `<div class="parsed-item">🎓 ${p.education[0]?.school||''} ${p.education[0]?.major||''}</div>` : ''}
+                ${p.phone ? `<div class="parsed-item">📱 ${p.phone}</div>` : ''}
+                ${p.email ? `<div class="parsed-item">✉️ ${p.email}</div>` : ''}
+                ${skills.length ? `<div class="parsed-skills">${skills.map(s=>`<span class="skill-tag">${s}</span>`).join('')}</div>` : ''}
+            </div>` : '<div class="parsed-item" style="color:var(--text-muted);font-size:13px;">未解析</div>'}
+            <div class="resume-actions">
+                ${!isPrimary ? `<button class="btn btn-primary btn-sm" onclick="setPrimary(${r.id})">设为主简历</button>` : ''}
+                <button class="btn btn-sm btn-upload-avatar ${hasAvatar ? 'btn-secondary' : 'btn-danger'}" data-resume-id="${r.id}" style="${!hasAvatar ? 'font-weight:700;border-color:#EF4444;background:#FEE2E2;' : ''}">${avatarBtnText}${!hasAvatar ? ' ⚠' : ''}</button>
+                <button class="btn btn-secondary btn-sm" onclick="viewDetail(${JSON.stringify(r).replace(/"/g,'&quot;')})">查看详情</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteResume(${r.id})">删除</button>
+            </div>
+        </div>`;
+    }).join('')}</div>`;
+
+    // 使用事件委托绑定头像上传按钮
+    document.querySelectorAll('.btn-upload-avatar').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const resumeId = parseInt(this.getAttribute('data-resume-id'));
+            console.log('[调试] 上传头像被调用, resumeId=', resumeId);
+            window.currentAvatarResumeId = resumeId;
+            document.getElementById('resumeAvatarInput').click();
+        });
+    });
+}
+
+// 全局变量用于存储当前要上传头像的简历ID
+window.currentAvatarResumeId = null;
+
+// 处理头像文件选择
+async function handleResumeAvatarSelect(e) {
+    const file = e.target.files[0];
+    const resumeId = window.currentAvatarResumeId;
+    console.log('[调试] 文件已选择, file=', file ? file.name : '无', 'resumeId=', resumeId);
+    if (!file || !resumeId) {
+        window.currentAvatarResumeId = null;
+        return;
+    }
+
+    const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowed.includes(file.type) && !file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+        alert('不支持的头像格式，请上传 JPG、PNG、GIF 格式');
+        window.currentAvatarResumeId = null;
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('avatar', file);
+    formData.append('resume_id', resumeId);
+
+    try {
+        const res = await fetch('/api/resume/avatar/upload', {method: 'POST', body: formData});
+        const data = await res.json();
+        if (data.success) {
+            alert('✅ 头像上传成功！');
+            loadResumes(); // 刷新列表
+        } else {
+            alert('❌ ' + data.error);
+        }
+    } catch (e) {
+        alert('❌ 上传失败：' + e.message);
+    }
+
+    document.getElementById('resumeAvatarInput').value = '';
+    window.currentAvatarResumeId = null;
+}
+
+loadResumes();
+</script>
+</body>
+</html>
