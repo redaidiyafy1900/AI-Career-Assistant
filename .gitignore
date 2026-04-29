@@ -82,3 +82,8 @@ template_unpacked/
 
 # 项目截图（可选保留）
 # screenshots/
+
+# IDE/工具内部配置（绝不上传）
+.workbuddy/
+.vscode/
+.idea/
